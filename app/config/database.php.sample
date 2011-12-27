@@ -5,9 +5,9 @@ class DATABASE_CONFIG {
 		'driver' => 'mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'orbis_user',
-		'password' => '7SvIfl',
-		'database' => 'orbis',
+		'login' => 'USERNAME',
+		'password' => 'PASSWORD',
+		'database' => 'DATABASE',
 	);
 }
 ?>
