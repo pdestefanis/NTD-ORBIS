@@ -4,9 +4,9 @@
 class dataBase {
 	
 	private $host = 'localhost';
-	private $user = 'orbis_user';
-	private $password = '7SvIfl';
-	private $database = 'orbis';
+	private $user = 'USERNAME';
+	private $password = 'PASSWORD';
+	private $database = 'DATABASE';
 	private $db;
 	
 	function __construct() {
