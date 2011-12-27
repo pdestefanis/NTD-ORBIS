@@ -1,3 +1,5 @@
 app/webroot/dataBase.php
 app/config/database.php
+app/tmp/*
+
 
