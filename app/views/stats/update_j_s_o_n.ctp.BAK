@@ -1,0 +1,110 @@
+﻿
+<?
+echo $crumb->getHtml('Update JSON', null, '' ) ;
+echo '<br /><br />' ;
+?> 
+<div class="drugs index">
+
+	
+	
+	
+	<h2><?php __('Drugs');?></h2>
+	<table cellpadding="0" cellspacing="0">
+	
+	<?php
+
+	$fileData = $this->UpdateFile->addFileHeader(); 	
+
+	$i = 0;
+	
+	foreach ($locations as $loc) :
+	
+		$class = null;
+		if ($i++ % 2 == 0) {
+			$class = ' class="altrow"';
+		} 
+		
+		$fileData .= $this->UpdateFile->addPointHeader($i-1, $locations[$loc['id']]); 
+		if (!empty($listdrugs[$loc['id']])) {
+			$fileData .= $this->UpdateFile->addDrugsHeader(); 
+			for ($j = 0; $j < count($listdrugs[$loc['id']]); $j++) { ?>
+				<tr<?php echo $class;?>>
+					<td><?php 
+						
+						$fileData .= $this->UpdateFile->addDrugsData($listdrugs[$loc['id']][$j]['Listdrugs']); 
+					?></td>
+					<td><?php echo  $listdrugs[$loc['id']][$j]['Listdrugs']['dname']; ?>&nbsp;</td>
+					<td><?php echo  $listdrugs[$loc['id']][$j]['Listdrugs']['quantity']?>&nbsp;</td>
+				</tr>
+				<?php } 
+				$fileData .= $this->UpdateFile->addDrugsFooter(); 
+		}
+		
+		if (!empty($listtreatments[$loc['id']])) {
+			$fileData .= $this->UpdateFile->addTreatmentsHeader(); 
+			for ($j = 0; $j < count($listtreatments[$loc['id']]); $j++) { 
+				$fileData .= $this->UpdateFile->addTreatmentsData($listtreatments[$loc['id']][$j]['Listtreatments']); 
+			} 
+			$fileData .= $this->UpdateFile->addTreatmentsFooter(); 
+		}
+		$fileData .= $this->UpdateFile->addPointFooter();
+		?>
+	
+<?php endforeach; 
+	$fileData .= $this->UpdateFile->addFileFooter();
+?>
+	</table>
+</div>
+
+
+<div class="drugs index">
+	<h2><?php __('Treatments');?></h2>
+	<table cellpadding="0" cellspacing="0">
+	
+	<?php
+		$i = 0;
+	
+		foreach ($locations as $loc) :
+		
+			$class = null;
+			if ($i++ % 2 == 0) {
+				$class = ' class="altrow"';
+			} 
+		?>
+			
+			<?php 
+			if (!empty($listtreatments[$loc['id']])) {
+				for ($j = 0; $j < count($listtreatments[$loc['id']]); $j++) { ?>
+					<tr<?php echo $class;?>>
+						<td><?php  echo $locations[$loc['id']]['name']; ?></td>
+						<td><?php echo  $listtreatments[$loc['id']][$j]['Listtreatments']['dname']; ?>&nbsp;</td>
+						<td><?php echo  $listtreatments[$loc['id']][$j]['Listtreatments']['quantity']?>&nbsp;</td>
+					</tr>
+					<?php } 
+			}?>
+		
+	<?php endforeach; 
+	
+
+
+	
+?>
+	</table>
+</div>
+
+
+
+<div class="stats form">
+<?php echo $this->Form->create('Stat', array('action' => 'updateJSONFile')); ?>
+	<fieldset>
+ 		<legend><?php __('Update File'); ?></legend>
+	<?php
+		echo $form->textarea('JSONFile', array('value' => $fileData));	?>
+	</fieldset>
+<?php echo $this->Form->end(__('Update', true));?>
+</div>
+
+<? 
+	//$this->data['JSONFile'] = $fileData;
+	//echo $this->data['JSONFile'] ;//htmlentities($fileData);
+	?>

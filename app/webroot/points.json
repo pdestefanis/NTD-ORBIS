@@ -1,0 +1,27 @@
+{"markers": [
+{
+"point": {"latitude":"0.313611","longitude":"32.581111"},
+"html": "<p><strong>Kampala Central Hospital</strong></p><p><table><tr><td>Drug</td> <th>Units Remaining</th></tr> <tr><th>Albendazole</th><td>151</td></tr></table></p> <p>&nbsp;</p>",
+"markerImage":"http://google-maps-icons.googlecode.com/files/hospital.png" 
+}
+,{
+"point": {"latitude":"2.78","longitude":"32.3"},
+"html": "<p><strong>Gulu Hospital</strong></p><p><table><tr><td>Treatment</td> <th># Provided</th></tr> <tr><th>ABSA</th><td>63</td></tr></table></p> <p>&nbsp;</p>",
+"markerImage":"http://google-maps-icons.googlecode.com/files/hospital.png" 
+}
+,{
+"point": {"latitude":"1.3475","longitude":"34.044444"},
+"html": "<p><strong>Bukedea Health Clinic</strong></p><p><table><tr><td>Drug</td> <th>Units Remaining</th></tr> <tr><th>Mebendazole</th><td>139</td></tr><tr><th>Albendazole</th><td>27</td></tr><tr><th>Zithromax tablets</th><td>19</td></tr></table></p> <p>&nbsp;</p><p><table><tr><td>Treatment</td> <th># Provided</th></tr> <tr><th>LOPP</th><td>92</td></tr><tr><th>ABSA</th><td>78</td></tr></table></p> <p>&nbsp;</p>",
+"markerImage":"http://google-maps-icons.googlecode.com/files/hospital.png" 
+}
+,{
+"point": {"latitude":"3.03","longitude":"30.91"},
+"html": "<p><strong>Arua Main Clinic</strong></p><p><table><tr><td>Drug</td> <th>Units Remaining</th></tr> <tr><th>Zithromax tablets</th><td>777</td></tr><tr><th>Albendazole</th><td>1234</td></tr></table></p> <p>&nbsp;</p>",
+"markerImage":"http://google-maps-icons.googlecode.com/files/hospital.png" 
+}
+,{
+"point": {"latitude":"1.683611","longitude":"31.722222"},
+"html": "<p><strong>Masindi Area Clinic</strong></p>",
+"markerImage":"http://google-maps-icons.googlecode.com/files/hospital.png" 
+}
+] }

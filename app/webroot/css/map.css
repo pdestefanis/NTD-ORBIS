@@ -1,0 +1,37 @@
+table {
+	border-width: 1px 1px 1px 1px;
+	border-spacing: 0px;
+	border-style: outset outset outset outset;
+	border-color: gray gray gray gray;
+	border-collapse: collapse;
+	background-color: rgb(255, 250, 250);
+	font-size: 12px;
+}
+table th {
+	color: #182FD6;
+	border-width: 1px 1px 1px 1px;
+	padding: 4px 4px 4px 4px;
+	border-style: solid solid solid solid;
+	border-color: gray gray gray gray;
+	background-color: #C9CACF;
+	-moz-border-radius: 0px 0px 0px 0px;
+}
+table td {
+	border-width: 1px 1px 1px 1px;
+	padding: 4px 4px 4px 4px;
+	border-style: solid solid solid solid;
+	border-color: gray gray gray gray;
+	background-color: white;
+	-moz-border-radius: 0px 0px 0px 0px;
+}
+p {
+
+	color: #182FD6;
+}
+.alert {
+	color: red !important;
+}
+
+.infowindow {
+	width: 370px;
+}
