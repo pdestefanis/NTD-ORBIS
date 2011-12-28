@@ -1,0 +1,4 @@
+Files to edit before using:
+
+app\webroot\dataBase.php
+app\config\database.php
