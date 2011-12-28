@@ -1,4 +1,5 @@
 Files to edit before using:
 
-app\webroot\dataBase.php
-app\config\database.php
+app\webroot\dataBase.php.sample : enter database configuration information for the SMS parser, and rename to dataBase.php
+
+app\config\database.php.sample : enter database configuration for the website, and rename to database.php
