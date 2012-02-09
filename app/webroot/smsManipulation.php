@@ -34,6 +34,7 @@ class smsManipulation {
 			$arg2 .=  $a . ' ';
 		} 
 		$this->args[1] = trim($arg2);
+		//at this point we still dont know what manipulators if any are used or if this is valid.
 		
 		//error_log("[ ".date("Y-m-d H:i:s")." ]:  processSMS:". $this->args[1] .  " " .$this->args[2]."\n", 3, __ROOT__ . "/webroot/parser.log");
 		//find the phone if present
@@ -49,7 +50,7 @@ class smsManipulation {
 		}
 		
 		// check that there are arguments
-		if (sizeof($this->args) == 1 || sizeof($this->args) == 2 || sizeof($this->args) > 3 || (count(explode(" ",$this->args[1])) > 2)) { //if empty message or more than necessary arguements
+		if (sizeof($this->args) == 1 || sizeof($this->args) == 2 || sizeof($this->args) > 3 || (count(explode(" ",$this->args[1])) > 2) && substr(strtoupper($this->args[1]), 0, 3) != "MDA") { //if empty message or more than necessary arguements
 			$raw = "Incorrect arguments set. Please use Item-Code, a space, modfier (+,-,=), a space, and the quantity to report. Please send one report per SMS.";
 			$this->dbManip->setSent($this->phoneId, $this->currDate, $raw . " " .end($this->args), $this->getReceivedId ());
 			echo $raw;
@@ -294,8 +295,8 @@ class smsManipulation {
 	}
 	
 	function regPhone() {
-		$creUpd = $this->dbManip->regPhone ($this->sms->getPhone(), $this->getPhoneId(), $this->locationId, substr($this->sms->getItem(), 0, -3));
-		$raw = "Thank you, ". substr($this->sms->getItem(), 0, -3) . " Your phone is $creUpd to " . $this->locationName;
+		$creUpd = $this->dbManip->regPhone ($this->sms->getPhone(), $this->getPhoneId(), $this->locationId, $this->sms->getItem());
+		$raw = "Thank you, ". $this->sms->getItem() . " Your phone is $creUpd to " . $this->locationName;
 		$this->dbManip->setSent($this->getPhoneId(), $this->currDate, $raw, $this->getReceivedId ());
 		echo $raw;
 		exit;

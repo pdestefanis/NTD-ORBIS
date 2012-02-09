@@ -76,9 +76,9 @@
 			}
 		} else if ($sms->getAction()  == 'register') {
 			//get the facility by code
-			$smsManip->getLocationIdByShortn(strtoupper(substr($sms->getItem(), -3) ));//item contains the shortcode if we get here.
+			$smsManip->getLocationIdByShortn(strtoupper($sms->getLocation() ));//item contains the shortcode if we get here.
 			//get the facility name
-			$smsManip->getLocationNameById($sms->getItem());
+			$smsManip->getLocationNameById($sms->getLocation());
 			//insert/update the phone
 			$smsManip->regPhone();
 			
