@@ -252,18 +252,42 @@ class StatsController extends AppController {
 	
 	//options action to cater for the last n digits
 	function  options() {
+		//addScript( array('colorpicker', 'eye', 'utils'));
 		if (!($this->data['Stat']['ndigits'])) {
 			Configure::load('options');
 			$length = Configure::read('Phone.length');
 			$limit = Configure::read('Graph.limit');
 			$threshold = Configure::read('Map.threshold');
 			$appName = Configure::read('App.name');
+			$seperators = Configure::read('Msg.seperators');
+			$avail_colors = Configure::read('Map.avail_colors');
+			$site_report_check = Configure::read('Map.site_report_check');
+			$site_report_days = Configure::read('Map.site_report_days');
+			$site_report_color = Configure::read('Map.site_report_color');
+			$item_report_check = Configure::read('Map.item_report_check');
+			$item_report_days = Configure::read('Map.item_report_days');
+			$item_report_color = Configure::read('Map.item_report_color');
 			//set the form
 			$this->data['Stat']['ndigits'] = $length;
 			$this->data['Stat']['ndigitsOld'] = $length;
 			$this->data['Stat']['limit'] = $limit;
 			$this->data['Stat']['threshold'] = $threshold;
 			$this->data['Stat']['appName'] = $appName;
+			
+			$this->data['Stat']['seperators'] = $seperators;
+			
+			$this->data['Stat']['avail_colors'] = $avail_colors;
+			$this->data['Stat']['site_report_check'] = $site_report_check;
+			$this->data['Stat']['site_report_days'] = $site_report_days;
+			$this->data['Stat']['site_report_color'] = $site_report_color;
+			
+			$this->data['Stat']['item_report_check'] = $item_report_check;
+			$this->data['Stat']['item_report_days'] = $item_report_days;
+			$this->data['Stat']['item_report_color'] = $item_report_color;
+			
+			
+			$options = @explode(',', $avail_colors);
+			$this->set("color_options", $options);
 
 		} else {
 			if (($this->data['Stat']['ndigitsOld'] < $this->data['Stat']['ndigits']) 
@@ -279,17 +303,25 @@ class StatsController extends AppController {
 					|| $this->data['Stat']['threshold'] <=0 || $this->data['Stat']['threshold'] > 25){
 				$this->Session->setFlash(__('Report warning must be numeric', true));
 				$this->Stat->invalidate('threshold', 'Please enter numeric value between 1 and 24 for number of months');
+			}else if (($this->data['Stat']['site_report_days'] > 1000) || (!empty($this->data['Stat']['site_report_days']) && (!is_numeric($this->data['Stat']['site_report_days']) || ($this->data['Stat']['site_report_days'] <=0 ) ))){
+				$this->Session->setFlash(__('Three digits max', true));
+				$this->Stat->invalidate('site_report_days', 'Please enter numeric value between 1 and 1000 for number of days site report is late');
+			}else if (($this->data['Stat']['item_report_days'] > 1000) || (!empty($this->data['Stat']['item_report_days']) && (!is_numeric($this->data['Stat']['item_report_days'])|| ($this->data['Stat']['item_report_days'] <=0 ) ))){
+				$this->Session->setFlash(__('Three digits max', true));
+				$this->Stat->invalidate('item_report_days', 'Please enter numeric value between 1 and 1000 for number of days item report is late');
 			} else {
 				$options = array(	'Phone' => 	
 										array('length' => $this->data['Stat']['ndigits'] ),
 									'Graph' =>
 										array('limit' => $this->data['Stat']['limit'] ),
-										
 									'Map' =>
-										array('threshold' => $this->data['Stat']['threshold'] ),
+										array('threshold' => $this->data['Stat']['threshold'], 'site_report_check' => $this->data['Stat']['site_report_check'], 'site_report_days' => $this->data['Stat']['site_report_days'], 'site_report_color' => "'".$this->data['Stat']['site_report_color']."'" , 'item_report_check' => $this->data['Stat']['item_report_check'], 'item_report_days' => $this->data['Stat']['item_report_days'] , 'item_report_color' => "'".$this->data['Stat']['item_report_color']."'", 'avail_colors' => "'".$this->data['Stat']['avail_colors']."'" ),
+									'Msg' =>
+										array('seperators' => "'". addslashes($this->data['Stat']['seperators']) ."'" ),
 									'App' =>
 										array('name' => "'". addslashes($this->data['Stat']['appName']) ."'" ),
 								);
+				
 				$this->storeConfig('options', $options );
 
 				$this->Session->setFlash('Options updated successfully', 'flash_success');
