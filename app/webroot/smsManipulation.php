@@ -38,7 +38,6 @@ class smsManipulation {
 		//error_log("[ ".date("Y-m-d H:i:s")." ]:  processSMS:". $this->args[1] .  " " .$this->args[2]."\n", 3, __ROOT__ . "/webroot/parser.log");
 		//find the phone if present
 		$this->phoneId = $this->dbManip->getPhoneId(end($this->args));
-
 		if ($this->phoneId == -1 && substr(strtoupper($this->args[1]), 0, 3) != "MDA") {//EDIT MDA HERE
 			$this->dbManip->setPhone(end($this->args)); //insert the not found phone in the database as inactive
 			$this->phoneId = $this->dbManip->getPhoneId(end($this->args));
@@ -49,7 +48,7 @@ class smsManipulation {
 		}
 		
 		// check that there are arguments
-		if (sizeof($this->args) == 1 || sizeof($this->args) == 2 || sizeof($this->args) > 3 || (count(explode(" ",$this->args[1])) > 2)) { //if empty message or more than necessary arguements
+		if (sizeof($this->args) == 1 || sizeof($this->args) == 2 || sizeof($this->args) > 3 || (count(explode(" ",$this->args[1])) > 2) && substr(strtoupper($this->args[1]), 0, 3) != "MDA") { //if empty message or more than necessary arguements
 			$raw = "Incorrect arguments set. Please use Item-Code, a space, modfier (+,-,=), a space, and the quantity to report. Please send one report per SMS.";
 			$this->dbManip->setSent($this->phoneId, $this->currDate, $raw . " " .end($this->args), $this->getReceivedId ());
 			echo $raw;
