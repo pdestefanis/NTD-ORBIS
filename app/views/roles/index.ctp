@@ -12,15 +12,17 @@
 	</tr>
 	<?php
 	$i = 0;
+	
 	foreach ($roles as $role):
 		$class = null;
 		if ($i++ % 2 == 0) {
 			$class = ' class="altrow"';
 		}
+		
 	?>
 	<tr<?php echo $class;?>>
 		<td><?php echo $access->checkHtml('Roles/view', 'text', $role['Role']['name'], '/roles/view/' . $role['Role']['id'] ); ?>&nbsp;</td>
-		<td><?php echo $count[$role['Role']['id']] ?>&nbsp;</td>
+		<td><?php echo (isset($count[$role['Role']['id']])?$count[$role['Role']['id']]:0) ?>&nbsp;</td>
 	
 	</tr>
 <?php endforeach; ?>

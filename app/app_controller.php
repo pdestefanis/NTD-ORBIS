@@ -500,7 +500,15 @@ class AppController extends Controller {
 		$content = '';
 		if (!empty($data)) {
 			foreach ($data as $key => $value) {
-				$content .= sprintf("\$config['%s']['%s'] = %s;\n", $key, key($value), $value[key($value)]);
+				if(sizeof($value) > 1){
+					foreach ($value as $new_key => $new_value) {
+						if(($new_value != "0") && !empty($new_value)&& ($new_value != "''"))
+						$content .= sprintf("\$config['%s']['%s'] = %s;\n", $key, $new_key, $new_value);
+						
+					}
+				}else{
+					$content .= sprintf("\$config['%s']['%s'] = %s;\n", $key, key($value), $value[key($value)]);
+				}
 			}
 		}
 	 
@@ -509,8 +517,9 @@ class AppController extends Controller {
 		App::import('core', 'File');
 		$name = strtolower($name);
 		$file = new File(CONFIGS.$name.'.php');
+		$file->delete();
 		if ($file->open('w')) {
-			$file->append($content);
+			$file->write($content);
 		}
 		$file->close();
 	 

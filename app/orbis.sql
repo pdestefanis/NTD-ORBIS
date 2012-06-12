@@ -2,7 +2,11 @@
 --
 -- Host: localhost    Database: orbis
 -- ------------------------------------------------------
+<<<<<<< HEAD
 -- Server version	5.0.45-community-nt-log
+=======
+-- Server version  5.0.45-community-nt-log
+>>>>>>> 70e5ab99d2795cb764fa1bcb1a7b9738cd07d687
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -150,7 +154,11 @@ CREATE TABLE `aros` (
   `lft` int(11) default NULL,
   `rght` int(11) default NULL,
   PRIMARY KEY  (`id`)
+<<<<<<< HEAD
 ) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+=======
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+>>>>>>> 70e5ab99d2795cb764fa1bcb1a7b9738cd07d687
 
 --
 -- Dumping data for table `aros`
@@ -158,7 +166,11 @@ CREATE TABLE `aros` (
 
 LOCK TABLES `aros` WRITE;
 /*!40000 ALTER TABLE `aros` DISABLE KEYS */;
+<<<<<<< HEAD
 INSERT INTO `aros` VALUES (1,NULL,'Role',1,'Admin',1,14),(2,NULL,'Role',2,'Manager',15,18),(3,1,'User',1,'',2,3),(4,NULL,'Role',3,'User',19,26),(20,2,'User',9,'',16,17),(6,4,'User',3,'',20,21);
+=======
+INSERT INTO `aros` VALUES (1,NULL,'Role',1,'Admin',1,16),(2,NULL,'Role',2,'Manager',17,18),(3,1,'User',1,'',2,3),(4,NULL,'Role',3,'ItManager',19,26),(5,1,'User',2,'',14,15),(6,4,'User',3,'',20,21),(7,1,'User',6,'',4,5),(8,4,'User',4,'',22,23),(9,4,'User',5,'',24,25),(13,1,'User',19,'',6,7),(15,1,'User',21,'',8,9),(17,1,'User',23,'',10,11),(19,1,'User',25,'',12,13);
+>>>>>>> 70e5ab99d2795cb764fa1bcb1a7b9738cd07d687
 /*!40000 ALTER TABLE `aros` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -605,7 +617,11 @@ CREATE TABLE `users` (
   `active` int(1) default '1',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `username` (`username`)
+<<<<<<< HEAD
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+=======
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+>>>>>>> 70e5ab99d2795cb764fa1bcb1a7b9738cd07d687
 
 --
 -- Dumping data for table `users`
@@ -613,7 +629,11 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+<<<<<<< HEAD
 INSERT INTO `users` VALUES (1,'Administrator','admin','8db57f058f3daac554698a07b8eaf8df1e1d319b',1,'2010-08-29 23:11:29','2011-09-26 14:50:37',18,0,NULL,1),(3,'User Test1','user','6a694882e95141fab40d4170356884698ceb88b6',3,'2010-08-29 23:11:57','2012-01-05 16:27:40',24,0,NULL,1),(9,'mod','mod','972b31ee3bed7b8b8f965bbc967dcc4a4d8b67b5',2,'2012-01-05 16:29:06','2012-01-05 16:29:06',6,1,NULL,1);
+=======
+INSERT INTO `users` VALUES (1,'Administrator','admin','8db57f058f3daac554698a07b8eaf8df1e1d319b',1,'2010-08-29 23:11:29','2011-09-26 14:50:37',18,0,NULL,1),(2,'Moderator','moderator','972b31ee3bed7b8b8f965bbc967dcc4a4d8b67b5',2,'2010-08-29 23:11:44','2012-01-05 11:14:38',28,1,NULL,1),(3,'User Test1','user','6a694882e95141fab40d4170356884698ceb88b6',3,'2010-08-29 23:11:57','2012-01-05 11:14:56',24,0,NULL,0);
+>>>>>>> 70e5ab99d2795cb764fa1bcb1a7b9738cd07d687
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -636,4 +656,8 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+<<<<<<< HEAD
 -- Dump completed on 2012-01-05 16:31:59
+=======
+-- Dump completed on 2012-01-05 16:13:07
+>>>>>>> 70e5ab99d2795cb764fa1bcb1a7b9738cd07d687

@@ -68,11 +68,15 @@ class UpdateFileHelper extends Helper {
 		return "\",";
 	}
 	
-    function addPointFooter($globalAlarm, $empty) {
+    function addPointFooter($globalAlarm, $empty, $site_no_report=false, $items_no_report=false) {
 		//all icons generated from 
 		//http://gmaps-utility-library.googlecode.com/svn/trunk/mapiconmaker/1.1/examples/markericonoptions-wizard.html
 		if ($globalAlarm)
 			$html = "\"markerImage\":\"img/star-red.png\" }";
+		else if ($site_no_report) // case where no item reported within timeframe 
+			$html = "\"markerImage\":\"img/star-".trim($site_no_report).".png\" }";
+		else if ($items_no_report) // case where at least 1 item was reported out of timeframe
+			$html = "\"markerImage\":\"img/star-".trim($items_no_report).".png\" }";
 		else if ($empty) // case where no items have been reported 
 			$html = "\"markerImage\":\"img/star-grey.png\" }";
 		else

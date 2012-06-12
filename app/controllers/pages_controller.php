@@ -85,6 +85,7 @@ class PagesController extends AppController {
 		if (!empty($path[$count - 1])) {
 			$title_for_layout = Inflector::humanize($path[$count - 1]);
 		}
+		
 		$this->updateJSONFile();
 		
 		$this->set(compact('page', 'subpage', 'title_for_layout'));
@@ -103,7 +104,18 @@ class PagesController extends AppController {
 		
 		if (!($this->data['Stat']['JSONFile'])) {	
 				$locations = $this->Stat->query('SELECT * FROM locations where deleted = 0 and id IN (' .  implode(",", $this->Session->read("userLocations"))  . ') ');
-	
+				
+				Configure::load('options');
+				$avail_colors = Configure::read('Map.avail_colors');
+				$options = @explode(',', $avail_colors);
+				$this->set("color_options", $options);
+				$this->set('site_report_check', Configure::read('Map.site_report_check'));
+				$this->set('site_report_days', Configure::read('Map.site_report_days'));
+				$this->set('site_report_color', Configure::read('Map.site_report_color'));
+				$this->set('item_report_check', Configure::read('Map.item_report_check'));
+				$this->set('item_report_days', Configure::read('Map.item_report_days'));
+				$this->set('item_report_color', Configure::read('Map.item_report_color'));
+				
 				$this->set('locations', $locations);
 				$listitems = $this->getReports($locations);
 				$this->set(compact('listitems', $listitems));
@@ -121,7 +133,6 @@ class PagesController extends AppController {
 
 				$Stats->constructClasses();
 				$graphURL = $Stats->graphTimeline();
-				
 				$this->set('graphURL', $graphURL);
 		}
 	}
