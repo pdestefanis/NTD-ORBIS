@@ -50,7 +50,7 @@
  *
  */
 	if (!defined('CAKE_CORE_INCLUDE_PATH')) {
-		 define('CAKE_CORE_INCLUDE_PATH',  DS . 'var' . DS . 'www' . DS . 'html' . DS . 'orbis');	
+		 define('CAKE_CORE_INCLUDE_PATH',  DS . 'Users' . DS . 'fet' . DS . 'Sites' . DS . 'NTD');	
 		
 	}
 
