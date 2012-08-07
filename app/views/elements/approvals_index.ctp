@@ -1,72 +1,53 @@
-<div class="search">
-	<?php	echo $this->Form->create('Search', array('default'=>false) );?>
-		<?php
-			echo $this->Form->input('search', array('label' => '', 'value' => isset($this->passedArgs[0])?$this->passedArgs[0]:$this->Form->value('search')));
-			$paginator->options(array('url' => 
-					(($this->Form->value('search') =='')?
-						(isset($this->passedArgs[0])?$this->passedArgs[0]:$this->Form->value('search'))
-						:$this->Form->value('search'))
-					)
-				); 
-		?>
-	<?php  
-		echo $ajax->submit('Filter', array('url'=> '', 'update' => 'update', 'loading' => '$(\'LoadingDiv\').show()', 'loaded' => '$(\'LoadingDiv\').hide()' )); 
-	?>
-</div>
+
 	
 <h2><?php __('Approvals');?></h2>
 	<table cellpadding="0" cellspacing="0">
-	<tr>
-			<th><?php echo $this->Paginator->sort('Message', 'rawmessage');?></th>
-			<th><?php echo $this->Paginator->sort('User', 'User.name');?></th>
-			<th><?php echo $this->Paginator->sort('Date', 'created');?></th>
+	<tr><?php
+	echo "
+			<th>".__('Facility',1)."</th>
+			<th>".__('Level',1)."</th>
+			<th>".__('Item',1)."</th>
+			<th>".__('Current Total Count',1)."</th>
+			<th>".__('Total Approved Count',1)."</th>
+			<th>".__('Last Update',1)."</th>
+			<th>".__('Last Approval',1)."</th>
+		";	?>
 	</tr>
 	<?php
 	$i = 0;
-	foreach ($approvals as $approval):
-		$class = null;
-		if ($i++ % 2 == 0) {
-			$class = ' class="altrow"';
-		}
-		/* if (isset($prev) && $prev == $approval['Approval']['id'])
-			continue;
-		$prev = $approval['Approval']['id']; */
-	?>
-	<tr<?php echo $class;?>>
-		
-		<td>
-			<?php 
-				echo $access->checkHtml('Approvals/view', 'text', $approval['Messagereceived']['rawmessage'], '/approvals/view/' . $approval['Approval']['id'] );
-			 ?>
-		</td>
-		<td>
-			<?php 
-				echo $access->checkHtml('Users/view', 'text', $approval['User']['name'], '/users/view/' . $approval['User']['id'] );
-			?>
-		</td>
-		<td>
-			<?php echo $approval['Approval']['created']; ?>
-		</td>
-	</tr>
-<?php endforeach; ?>
-	</table>
-	<p>
-	<?php
-	echo $this->Paginator->counter(array(
-	'format' => __('Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%', true)
-	));
-	?>	</p>
+	foreach ($approved as $location_id => $location):
+		foreach ($location as $item_id => $item):
 
-	<div class="paging">
-		<?php echo $this->Paginator->prev('<< ' . __('previous', true), array(), null, array('class'=>'disabled'));?>
-	 | 	<?php echo $this->Paginator->numbers();?>
- |
-		<?php echo $this->Paginator->next(__('next', true) . ' >>', array(), null, array('class' => 'disabled'));?>
-	</div>
+			$row_class = ($i++ % 2) ? ' class="altrow"' : ' class="norow"';
+
+			$facility    = $item['lname'];
+			$depth       = $item['depth'];
+			$item_name   = $item['name'];
+
+			$approved_quantity = $item['quantity'];
+			$total_quantity    = $all[$location_id][$item_id]['quantity'];
+
+			$last_updated      = $all[$location_id][$item_id]['last_updated'];
+			$last_approval     = isset($approved[$location_id][$item_id]) ? $approved[$location_id][$item_id]['last_approval'] : "";
+
+		?>
+		<tr<?php echo $row_class;?>>
+			<td><?php echo $facility; ?></td>
+			<td><?php echo $depth; ?></td>
+			<td><?php echo $item_name; ?></td>
+			<td><?php echo $total_quantity; ?></td>
+			<td><?php echo $approved_quantity; ?></td>
+			<td><?php echo $last_updated; ?></td>
+			<td><?php echo $last_approval; ?></td>
+
+		</tr>
+<?php endforeach; endforeach; ?>
+	</table>
+
 </div>
 <div class="actions">
-	<h3><?php //__('Actions'); ?></h3>
+	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		
+		<li><?php echo $this->Html->link("Pending", array("controller" => "approvals", "action" => "pending")); ?></li>
 	</ul>
 </div>
