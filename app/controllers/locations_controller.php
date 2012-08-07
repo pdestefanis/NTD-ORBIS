@@ -318,6 +318,8 @@ class LocationsController extends AppController {
 
 	function setAggregates($node)
 	{
+		if (! isset($node))
+			return $node;
 
 		$children = $node['children'];
 		if (count($children) == 0)
@@ -363,7 +365,6 @@ class LocationsController extends AppController {
 
 	function flattenTree($node)
 	{
-
 		$children = $node['children'];
 		$result = array();
 		if (count($children) != 0)
@@ -407,10 +408,12 @@ class LocationsController extends AppController {
 
 	function arrayToHash( $array )
 	{
+
 		$result = array();
 		foreach ($array as $element)
 		{
-
+			if (empty($element))
+				continue;
 			if ( ! isset( $result[$element['lid']] ) ) $result[$element['lid']] = array();
 
 			foreach ( $element['total_items'] as $item_key => $item_value )

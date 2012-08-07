@@ -44,7 +44,7 @@ class PagesController extends AppController {
  * @var array
  * @access public
  */
-	var $helpers = array('Html', 'Form', 'Javascript', 'GoogleMap', 'Crumb', 'UpdateFile', 'Ajax', 'GoogleChart', 'GoogleMapv3');
+	var $helpers = array('Html', 'Form', 'Javascript', 'GoogleMap', 'Crumb', 'UpdateFile', 'Ajax', 'GoogleChart', 'GoogleMapv3', 'Time');
 	
 
 /**

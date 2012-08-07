@@ -62,11 +62,12 @@
 			$sum = $smsManip->getChildrenAndParentSum(); //sum children and the paret - parent is the users location
 
 			$pId = $smsManip->getPhoneId();
+			$mId = $smsManip->getReceivedId();
 
 			//two cases an item and all
 			if (strtoupper($sms->getItem() ) == "ALL") {
 
-				$raw = file_get_contents("/approvals/rest/$pId/ALL");
+				$raw = file_get_contents("/approvals/rest/$mId/$pId/ALL");
 				echo $raw;
 				exit;
 				
@@ -80,7 +81,7 @@
 				exit;
 			} else {
 				$item = $sms->getItem();
-				$raw = file_get_contents("/approvals/rest/$pId/$item";
+				$raw = file_get_contents("/approvals/rest/$mId/$pId/$item";
 				echo $raw;
 				exit;
 

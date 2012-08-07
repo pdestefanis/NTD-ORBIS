@@ -144,33 +144,38 @@ class ApprovalsController extends AppController {
 		App::import('Controller', 'Users');
 		App::import('Controller', 'Locations');
 
+
+
 		$phones = new PhonesController;
 		$phones->constructClasses();
 		$phone = $phones->Phone->read(null, $pId);
 
+		$location_id = $phone['Phone']['location_id'];
+		$location = new LocationsController;
+		$location->constructClasses();
+
 		$users = new UsersController;
 		$users->constructClasses();
-		$user = $users->AuthExt->user();
 
-		$location_id = $phone['Phone']['location_id'];
-
-		$location = new LocationsController;
-		$location->constructClasses();
-
-		$user_reach = $user['User']['reach'];
-
-		if ($user_reach != 0)
+		$user = $users->User->find("list", array(
+			"conditions" => array("phone_id" => $pId), 
+			"recursive"  => -1, 
+			"fields"     => array("User.reach")
+		));
+			
+		if ( ! empty($user) )
 		{
-			for ( $i = 0; $i < $user_reach; $i++)
+			$user_reach = array_shift(array_values($user));
+			if ($user_reach != 0)
 			{
-				$this_location = $location->Location->read(null, $location_id);
-				if ( $this_location['Location']['parent_id'] != 0)
-					$location_id = $this_location['Location']['parent_id'];
+				for ( $i = 0; $i < $user_reach; $i++)
+				{
+					$this_location = $location->Location->read(null, $location_id);
+					if ( $this_location['Location']['parent_id'] != 0)
+						$location_id = $this_location['Location']['parent_id'];
+				}
 			}
 		}
-
-		$location = new LocationsController;
-		$location->constructClasses();
 
 		$pending = $location->getChildTree( $location_id, array(
 			'depth' => 1,
@@ -178,30 +183,34 @@ class ApprovalsController extends AppController {
 			'approvalState' => self::NOT_APPROVED
 		));
 
+
 		$pending = $location->setAggregates($pending);
+
 		$pending = $location->flattenTree($pending);
 		$pending = $location->arrayToHash($pending);
 
 		$quit = false;
 		echo "Pending \n";
-		foreach ($pending as $first)
+		$items = array();
+		
+		$location = $pending[$location_id];
+		foreach ($location as $key => $item)
 		{
-			if ($quit) continue;
-			foreach ($first as $key => $item)
-			{
-				$name = $item['total_items'][$key]['name'];
-				$quantity = $item['total_items'][$key]['quantity'];
-				echo "$name: $quantity";
-			}
-			$quit = true;
-		}	
+			$name = $item['total_items'][$key]['name'];
+			$quantity = $item['total_items'][$key]['quantity'];
+			$code = $item['total_items'][$key]['icode'];
+
+			array_push($items, "$name($code): $quantity");
+		}
+
+		echo implode("\n", $items);
 		$this->autoRender = false;
 	}
 	
-	function restApprove($pId=null, $iId=null)
+	function restApprove($mId=null, $pId=null, $iCode=null)
 	{
 
-
+		echo "m:$mId, pid:$pId, iCode:$iCode";
 		App::import('Controller', 'Phones');
 		App::import('Controller', 'Users');
 		App::import('Controller', 'Locations');
@@ -210,24 +219,31 @@ class ApprovalsController extends AppController {
 		$phones->constructClasses();
 		$phone = $phones->Phone->read(null, $pId);
 
-		$users = new UsersController;
-		$users->constructClasses();
-		$user = $users->AuthExt->user();
-
 		$location_id = $phone['Phone']['location_id'];
 
 		$location = new LocationsController;
 		$location->constructClasses();
 
-		$user_reach = $user['User']['reach'];
+		$users = new UsersController;
+		$users->constructClasses();
 
-		if ($user_reach != 0)
+		$user = $users->User->find("list", array(
+			"conditions" => array("phone_id" => $pId), 
+			"recursive"  => -1, 
+			"fields"     => array("User.reach")
+		));
+			
+		if ( ! empty($user) )
 		{
-			for ( $i = 0; $i < $user_reach; $i++)
+			$user_reach = array_shift(array_values($user));
+			if ($user_reach != 0)
 			{
-				$this_location = $location->Location->read(null, $location_id);
-				if ( $this_location['Location']['parent_id'] != 0)
-					$location_id = $this_location['Location']['parent_id'];
+				for ( $i = 0; $i < $user_reach; $i++)
+				{
+					$this_location = $location->Location->read(null, $location_id);
+					if ( $this_location['Location']['parent_id'] != 0)
+						$location_id = $this_location['Location']['parent_id'];
+				}
 			}
 		}
 
@@ -244,28 +260,25 @@ class ApprovalsController extends AppController {
 		$pending = $location->flattenTree($pending);
 		$pending = $location->arrayToHash($pending);
 
+
 		$quit = false;
 		$all_stats_ids = array();
 		echo "Approved\n ";
-		foreach ($pending as $first)
+		$location = $pending[$location_id];
+		foreach ($location as $key => $item)
 		{
-			if ($quit) continue;
-			foreach ($first as $key => $item)
+			if ($item['total_items'][$key]['icode'] == $iCode || $iCode == "ALL")
 			{
 
-				if ($item['total_items'][$key]['icode'] == $iId || $iId == "ALL")
-				{
-
-					$name = $item['total_items'][$key]['name'];
-					$quantity = $item['total_items'][$key]['quantity'];
-					$all_stats_ids = array_merge($all_stats_ids, $item['total_items'][$key]['stat_ids']);
-					echo "$name: $quantity";
-				}
+				$name = $item['total_items'][$key]['name'];
+				$quantity = $item['total_items'][$key]['quantity'];
+				$all_stats_ids = array_merge($all_stats_ids, $item['local_items'][$key]['stat_ids']);
+				$all_stats_ids = array_merge($all_stats_ids, $item['aggregate_items'][$key]['stat_ids']);
+				echo "$name: $quantity";
 			}
-			$quit = true;
-		}	
+		}
 
-		//echo "\n stats ids: ". implode(",",$all_stats_ids);
+		echo "\n stats ids: ". implode(",",$all_stats_ids);
 
 		$this->autoRender = false;
 	}
