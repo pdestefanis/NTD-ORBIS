@@ -21,17 +21,20 @@
 	{
 
 		if (count($location) > 1)
+		{
+			$row_class = ($i++ % 2) ? ' class="altrow"' : ' class="norow"';
 			echo <<<EOR
 					<tr $row_class>
 						<td><input class='approval_all' data-location='$location_key' type='checkbox'></td>
-						<td colspan='8'>Select all</td>
+						<td colspan='8'><b>Select all</b></td>
 					</tr>
 EOR;
+
+		}
 
 		foreach ( $location as $item_key => $item )
 		{
 
-			$i++;
 			$depth             = $item['depth'];
 			$row_class         = ($i++ % 2) ? ' class="altrow"' : ' class="norow"';
 			$stat_ids          = implode( $item['stat_ids'],",");
