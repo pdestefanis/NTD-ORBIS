@@ -24,6 +24,7 @@
 	
 	
 	<?php	
+
 	if (!empty($report)) {
 	$i = 1;
 	foreach (array_keys($report) as $loc) :
@@ -34,9 +35,19 @@
 		} 
 	
 		if (!empty($report[$loc])) {
-			foreach ($report[$loc] as $r) { 
+			foreach ($report[$loc] as $item_id => $r) { 
+				$item_name  = isset($r['iname'])      ? $r['iname']      : $r['name'];
+				$level      = isset($r['level'])      ? $r['level']      : $r['depth'];
+				$aggregated = isset($r['aggregated']) ? $r['aggregated'] : 0;
+				$aggregated = isset($r['aggregate_items'][$item_id]) ? $r['aggregate_items'][$item_id]['quantity'] : $aggregated;
+
+
+				$local_quantity = isset($r['own'])                   ? $r['own'] : 0;
+				$local_quantity = isset($r['local_items'][$item_id]) ? $r['local_items'][$item_id]['quantity'] : $local_quantity;
+				$total_quantity = isset($r['total'])                 ? $r['total'] : $r['quantity'];
+
 				if ($this->Form->value('search') != ''  && (stripos($r['lname'], $this->Form->value('search')) === FALSE
-						&& stripos($r['iname'], $this->Form->value('search')) === FALSE 
+						&& stripos($item_name, $this->Form->value('search')) === FALSE 
 						&& stripos($r['icode'], $this->Form->value('search')) === FALSE 
 						/* && $r['aggregated'] <= $this->Form->value('search')
 						&& $r['own'] <= $this->Form->value('search')  */
@@ -46,14 +57,14 @@
 				<tr <?php echo $class;?>>
 					
 					<td><?php 
-						echo $access->checkHtml('Locations/view', 'text', str_pad("", $r['level'], "-", STR_PAD_LEFT) . $r['lname'], '/locations/view/' . $loc);
+						echo $access->checkHtml('Locations/view', 'text', str_pad("", $level, "-", STR_PAD_LEFT) . $r['lname'], '/locations/view/' . $loc);
 						?>&nbsp;</td>
-					<td><?php echo $r['level'] ?>&nbsp;</td>
+					<td><?php echo $level ?>&nbsp;</td>
 					<td><?php 
-						echo $access->checkHtml('Items/view', 'text', $r['iname'], '/items/view/' . $r['iid']); ?>&nbsp;</td>
-					<td class='number'><?php echo $r['aggregated']; ?>&nbsp;</td>
-					<td class='number'><?php echo $r['own']; ?>&nbsp;</td>
-					<td class='number'><?php echo $r['total']; ?>&nbsp;</td>
+						echo $access->checkHtml('Items/view', 'text', $item_name, '/items/view/' . $item_id); ?>&nbsp;</td>
+					<td class='number'><?php echo $aggregated; ?>&nbsp;</td>
+					<td class='number'><?php echo $local_quantity; ?>&nbsp;</td>
+					<td class='number'><?php echo $total_quantity; ?>&nbsp;</td>
 					
 				</tr>
 		<?php } 
