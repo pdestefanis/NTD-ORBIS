@@ -364,8 +364,6 @@ class LocationsController extends AppController {
 	function flattenTree($node)
 	{
 
-		pr($node);
-
 		$children = $node['children'];
 		$result = array();
 		if (count($children) != 0)
