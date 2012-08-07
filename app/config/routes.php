@@ -22,6 +22,10 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+
+	Router::connect('/approvals/rest/:pId/:lId', array('controller' => 'approvals', 'action' => 'restApprove'), array('pass' => array('pId','lId')));
+	Router::connect('/approvals/rest/:pId',      array('controller' => 'approvals', 'action' => 'restIndex'),   array('pass'=>array('pId')));
+
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
  * its action called 'display', and we pass a param to select the view file
