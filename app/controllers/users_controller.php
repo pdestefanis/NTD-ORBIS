@@ -5,24 +5,23 @@ class UsersController extends AppController {
 	var $helpers = array('Html', 'Crumb', 'Javascript', 'Ajax');
 	var $components = array('AuthExt', 'RequestHandler', 'Access');
 
-	
 	function beforeRender() {
 
-			if ($this->action == 'view'){
-					if (!in_array($this->viewVars['user']['User']['location_id'], $this->Session->read("userLocations")) && $this->viewVars['user']['User']['location_id'] != "") { //view
-						
-						$this->Session->setFlash('You are not allowed to access this record.'  , 'flash_failure'); 
-						$this->redirect( '/users/index', null, false);
-					} 
-			}
-			if ($this->action == 'edit'){
-					if (!in_array($this->data['User']['location_id'], $this->Session->read("userLocations") ) && $this->data['User']['location_id'] != "") { //edit
-						$this->Session->setFlash('You are not allowed to access this record.' , 'flash_failure'); 
-						$this->redirect( '/users/index', null, false);
-					} 
-			}
-	}	
-  
+		if ($this->action == 'view'){
+				if (!in_array($this->viewVars['user']['User']['location_id'], $this->Session->read("userLocations")) && $this->viewVars['user']['User']['location_id'] != "") { //view
+					
+					$this->Session->setFlash('You are not allowed to access this record.'  , 'flash_failure'); 
+					$this->redirect( '/users/index', null, false);
+				} 
+		}
+		if ($this->action == 'edit'){
+				if (!in_array($this->data['User']['location_id'], $this->Session->read("userLocations") ) && $this->data['User']['location_id'] != "") { //edit
+					$this->Session->setFlash('You are not allowed to access this record.' , 'flash_failure'); 
+					$this->redirect( '/users/index', null, false);
+				} 
+		}
+	}
+
 	function login() {
 		if ($this->AuthExt->user()) {
 			
@@ -198,89 +197,110 @@ class UsersController extends AppController {
 		$this->redirect(array('action' => 'index'));
 	}
 
-
 	private function initDB() {
-		 $group =& $this->User->Group;
+		$group =& $this->User->Group;
+		
+		/*
+		 * Allow admins to everything
+		 */
+		$group->id = 8;
+		$this->Acl->allow($group, 'controllers');
+		$this->Acl->allow($group, 'controllers/Modifiers/view');
+		$this->Acl->allow($group, 'controllers/Modifiers/index');
 		 
-		 //Allow admins to everything
-		 $group->id = 8;
-		 $this->Acl->allow($group, 'controllers');
-		 $this->Acl->allow($group, 'controllers/Modifiers/view');
-		 $this->Acl->allow($group, 'controllers/Modifiers/index');
+		$this->Acl->deny($group, 'controllers/Modifiers');
+
+		// Approvals
+		$this->Acl->allow($group, 'controllers/Approvals/index');
+		$this->Acl->allow($group, 'controllers/Approvals/pending');
+		$this->Acl->allow($group, 'controllers/Approvals/add');
+
+
+		/*
+		 * moderators
+		 */
+		$group->id = 9;
+		$this->Acl->allow($group, 'controllers');
+
+		// Approvals
+		$this->Acl->allow($group, 'controllers/Approvals/index');
+		$this->Acl->allow($group, 'controllers/Approvals/pending');
+		$this->Acl->allow($group, 'controllers/Approvals/add');
+
+		$this->Acl->allow($group, 'controllers/updateJSONFile');
+		$this->Acl->allow($group, 'controllers/Stats/sitems');
+		$this->Acl->allow($group, 'controllers/Stats/ichart');
+		$this->Acl->allow($group, 'controllers/Stats/facility');
+		$this->Acl->allow($group, 'controllers/Stats/index');
+		$this->Acl->allow($group, 'controllers/Stats/view');
+		$this->Acl->allow($group, 'controllers/Stats/add');
+		$this->Acl->allow($group, 'controllers/Stats/edit');
+		$this->Acl->allow($group, 'controllers/Stats/update_select');
+		$this->Acl->allow($group, 'controllers/Stats/delete');
+		$this->Acl->allow($group, 'controllers/Items');
+		$this->Acl->allow($group, 'controllers/Locations');
+		$this->Acl->allow($group, 'controllers/Phones');
+		$this->Acl->allow($group, 'controllers/Rawreports/index');
+		$this->Acl->allow($group, 'controllers/Rawreports/view');
+		$this->Acl->allow($group, 'controllers/Rawreports/edit');
+		$this->Acl->allow($group, 'controllers/Rawreports/update_select');
+		$this->Acl->allow($group, 'controllers/Rawreports/delete');
+		$this->Acl->allow($group, 'controllers/Users/logout');
+		$this->Acl->allow($group, 'controllers/Stats/options');
+		$this->Acl->allow($group, 'controllers/Users/changePass');
+		$this->Acl->allow($group, 'controllers/Users/findLocationChildren');
+		$this->Acl->allow($group, 'controllers/Alerts');
 		 
-		 $this->Acl->deny($group, 'controllers/Modifiers');
+		$this->Acl->deny($group, 'controllers/Users');
+		$this->Acl->deny($group, 'controllers/Groups');
+		$this->Acl->deny($group, 'controllers/Users/initDB');
+		$this->Acl->deny($group, 'controllers/Users/build_acl');
+		$this->Acl->deny($group, 'controllers/Users/resetUsers');
+		$this->Acl->deny($group, 'controllers/Stats');
+		$this->Acl->deny($group, 'controllers/Rawreports');
+		$this->Acl->deny($group, 'controllers/Modifiers');
 
-		 //moderators
-		 $group->id = 9;
-		 $this->Acl->allow($group, 'controllers');
+		/*
+		 * Users
+		 */
+		$group->id = 10;
+		$this->Acl->allow($group, 'controllers');
+		
+		$this->Acl->allow($group, 'controllers/Approvals/index');
+		$this->Acl->allow($group, 'controllers/Approvals/pending');
+		$this->Acl->allow($group, 'controllers/Approvals/add');
+		
+		$this->Acl->allow($group, 'controllers/updateJSONFile');
+		$this->Acl->allow($group, 'controllers/getReport');
+		$this->Acl->allow($group, 'controllers/findTopParent');
+		$this->Acl->allow($group, 'controllers/Stats/sitems');
+		$this->Acl->allow($group, 'controllers/Stats/ichart');
+		$this->Acl->allow($group, 'controllers/Stats/facility');
+		$this->Acl->allow($group, 'controllers/Users/logout');
+		$this->Acl->allow($group, 'controllers/Item/view');
+		$this->Acl->allow($group, 'controllers/Locations/view');
+		$this->Acl->allow($group, 'controllers/Users/changePass');
+		$this->Acl->allow($group, 'controllers/findLocationChildren');
+		$this->Acl->allow($group, 'controllers/findLocationParent');
 
-		 $this->Acl->allow($group, 'controllers/updateJSONFile');
-		 $this->Acl->allow($group, 'controllers/Stats/sitems');
-		 $this->Acl->allow($group, 'controllers/Stats/ichart');
-		 $this->Acl->allow($group, 'controllers/Stats/facility');
-		 $this->Acl->allow($group, 'controllers/Stats/index');
-		 $this->Acl->allow($group, 'controllers/Stats/view');
-		 $this->Acl->allow($group, 'controllers/Stats/add');
-		 $this->Acl->allow($group, 'controllers/Stats/edit');
-		 $this->Acl->allow($group, 'controllers/Stats/update_select');
-		  $this->Acl->allow($group, 'controllers/Stats/delete');
-		 $this->Acl->allow($group, 'controllers/Items');
-		 $this->Acl->allow($group, 'controllers/Locations');
-		 $this->Acl->allow($group, 'controllers/Phones');
-		 $this->Acl->allow($group, 'controllers/Rawreports/index');
-		 $this->Acl->allow($group, 'controllers/Rawreports/view');
-		  $this->Acl->allow($group, 'controllers/Rawreports/edit');
-		 $this->Acl->allow($group, 'controllers/Rawreports/update_select');
-		   $this->Acl->allow($group, 'controllers/Rawreports/delete');
-		 $this->Acl->allow($group, 'controllers/Users/logout');
-		 $this->Acl->allow($group, 'controllers/Stats/options');
-		 $this->Acl->allow($group, 'controllers/Users/changePass');
-		 $this->Acl->allow($group, 'controllers/Users/findLocationChildren');
-		 $this->Acl->allow($group, 'controllers/Alerts');
-		 
-		 $this->Acl->deny($group, 'controllers/Users');
-		 $this->Acl->deny($group, 'controllers/Groups');
-		 $this->Acl->deny($group, 'controllers/Users/initDB');
-		 $this->Acl->deny($group, 'controllers/Users/build_acl');
-		 $this->Acl->deny($group, 'controllers/Users/resetUsers');
-		 $this->Acl->deny($group, 'controllers/Stats');
-		 $this->Acl->deny($group, 'controllers/Rawreports');
-		 $this->Acl->deny($group, 'controllers/Modifiers');
+		$this->Acl->deny($group, 'controllers/Users');
+		$this->Acl->deny($group, 'controllers/Groups');
+		$this->Acl->deny($group, 'controllers/Users/initDB');
+		$this->Acl->deny($group, 'controllers/Users/build_acl');
+		$this->Acl->deny($group, 'controllers/Users/resetUsers');
+		$this->Acl->deny($group, 'controllers/Items');
+		$this->Acl->deny($group, 'controllers/Locations');
+		$this->Acl->deny($group, 'controllers/Phones');
+		$this->Acl->deny($group, 'controllers/Stats');
+		$this->Acl->deny($group, 'controllers/Rawreports');
+		$this->Acl->deny($group, 'controllers/Stats/options');
+		$this->Acl->deny($group, 'controllers/Modifiers');
 
-		 //Users
-		 $group->id = 10;
-		 $this->Acl->allow($group, 'controllers');
-		 $this->Acl->allow($group, 'controllers/updateJSONFile');
-		 $this->Acl->allow($group, 'controllers/getReport');
-		 $this->Acl->allow($group, 'controllers/findTopParent');
-		 $this->Acl->allow($group, 'controllers/Stats/sitems');
-		 $this->Acl->allow($group, 'controllers/Stats/ichart');
-		 $this->Acl->allow($group, 'controllers/Stats/facility');
-		 $this->Acl->allow($group, 'controllers/Users/logout');
-		 $this->Acl->allow($group, 'controllers/Item/view');
-		 $this->Acl->allow($group, 'controllers/Locations/view');
-		 $this->Acl->allow($group, 'controllers/Users/changePass');
-		 $this->Acl->allow($group, 'controllers/findLocationChildren');
-		 $this->Acl->allow($group, 'controllers/findLocationParent');
+		//echo "all done";
+		$this->Session->setFlash('User acl reset success', 'flash_success');
+		$this->setAction('login');
+	}
 
-		 $this->Acl->deny($group, 'controllers/Users');
-		 $this->Acl->deny($group, 'controllers/Groups');
-		 $this->Acl->deny($group, 'controllers/Users/initDB');
-		 $this->Acl->deny($group, 'controllers/Users/build_acl');
-		 $this->Acl->deny($group, 'controllers/Users/resetUsers');
-		 $this->Acl->deny($group, 'controllers/Items');
-		 $this->Acl->deny($group, 'controllers/Locations');
-		 $this->Acl->deny($group, 'controllers/Phones');
-		 $this->Acl->deny($group, 'controllers/Stats');
-		 $this->Acl->deny($group, 'controllers/Rawreports');
-		 $this->Acl->deny($group, 'controllers/Stats/options');
-		 $this->Acl->deny($group, 'controllers/Modifiers');
-		 
-		 //echo "all done";
-		 $this->Session->setFlash('User acl reset success', 'flash_success');
-		 $this->setAction('login');
-		 }
-	
 	private function build_acl() {
   		if (!Configure::read('debug')) {
   			return $this->_stop();
