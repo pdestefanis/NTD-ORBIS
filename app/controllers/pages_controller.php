@@ -106,6 +106,7 @@ class PagesController extends AppController {
 	
 				$this->set('locations', $locations);
 				$listitems = $this->getReports($locations);
+
 				$this->set(compact('listitems', $listitems));
 				//echo "<pre>" . print_r($listitems, true) . "</pre>";
 				App::import('Controller', 'Alerts');
@@ -127,32 +128,64 @@ class PagesController extends AppController {
 	}
 	
 	private function &getReports($locations) {
-				$listitems = array();
-				$temp = array();
+		
+				App::import('Controller', 'Stats');
+				$stat = new StatsController;
+				$stat->constructClasses();
+
 				
 				//for ($j = 1; $j <= count($locations); $j++)
 				//get current date less report threshold
 				Configure::load('options');
 				$threshold = Configure::read('Map.threshold');
+				$showLive = Configure::read('App.displayMode') == 'L';
+				
 				$currDate = date("Y-m-d H:i:s");
 				$dateLessMonths = strtotime ('-'.$threshold.' month' , strtotime ($currDate)) ;
 				$dateLessMonths = date("Y-m-d H:i:s" , $dateLessMonths);
-					
-				foreach ($locations as $loc)
+
+				$all_stats = $stat->Stat->find("all", array( "recursive" => 1 ));
+				$last_stat_by_location = array();
+				foreach ($all_stats as $stat)
 				{
-					//items
-					$query = "SELECT quantity_after, item.name as dname, st.item_id, st.created ";
-					$query .= "FROM stats st, items item ";
-					$query .= "WHERE st.item_id = item.id ";
-					$query .= "AND st.id = (select max(sa.id) from stats sa where sa.item_id = st.item_id  ";
-					$query .= "AND location_id =" . $loc['locations']['id'] . " ) ";
-					$query .= "AND location_id =" . $loc['locations']['id'] . " ";
-					$query .= "ORDER by created DESC ";
+					if ($showLive && empty($stat['Approval'])) continue;
+					if ( isset( $last_stat_by_location[$stat['Stat']['location_id']] ) )
+					{
+						if ($last_stat_by_location[$stat['Stat']['location_id']]['Stat']['created'] < $stat['Stat']['created'])
+						{
+							$last_stat_by_location[$stat['Stat']['location_id']] = $stat;
+						}
+					} else 
+					{
+						$last_stat_by_location[$stat['Stat']['location_id']] = $stat;
+					}
+				}
 
+				$location_data = array();
+				foreach ($last_stat_by_location as $location)
+				{
 
-					//$result = runQuery($query);
-					$temp = $this->Stat->query($query);
-					//$this->set('listitems',$listitems);
+					$result_object = array( array(
+						'loc' => $location['Stat']['location_id'],
+						'st' => array(
+							'quantity_after' => $location['Stat']['quantity_after'],
+							'item_id'        => $location['Stat']['item_id'],
+							'created'        => $location['Stat']['created'],
+						),
+						'item' => array(
+							'dname' => $location['Item']['name']
+						)
+					) );
+
+					array_push($location_data, $result_object);
+
+				}
+
+				$listitems = array();
+				$temp = array();
+
+				foreach ($location_data as $temp)
+				{
 
 					$listd= array();
 
@@ -169,14 +202,12 @@ class PagesController extends AppController {
 						$listd[$i++]['Listitems'] = $row;
 					}
 					if (!empty($listd )){
-						$listitems[$loc['locations']['id']] = $listd;
+						$listitems[$temp[0]['loc']] = $listd;
 					}
 					
 				}
+
 				return $listitems;
 	}
 	
 }
- 
-    
-
