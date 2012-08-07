@@ -54,7 +54,6 @@ class StatsController extends AppController {
 	function add() {
 		if (!empty($this->data)) {
 			//TODO put quantity_after into data stat array
-			print_r($this->data['Stat']);
 			if (isset($this->data['Stat']['location_id']) && isset($this->data['Stat']['item_id']) && isset ($this->data['Stat']['modifier_id'])) {
 				$query = 'SELECT quantity_after from stats st ';
 				$query .= ' WHERE location_id=' . $this->data['Stat']['location_id'];
@@ -177,61 +176,129 @@ class StatsController extends AppController {
 	
 	
 	function aggregatedInventory($strFilter = null) {
+
+		$showLive = (Configure::read('App.displayMode') == "L");
+
 		//print_r($this->Stat->Location->Alert->find('all'));
 		$locations = $this->Stat->Location->find('list',  
 						array('fields' => array('Location.parent_id', 'Location.name', 'Location.id'), 
-											array('conditions' => array('id IN ' => implode(",", $this->Session->read("userLocations"))))
+						array('conditions' => array('id IN ' => implode(",", $this->Session->read("userLocations"))))
 								)
 						);
+		if ($showLive)
+		{
+			$items = $this->Stat->Item->find('list');
+			$this->set(compact('locations', 'items'));
 
-		$items = $this->Stat->Item->find('list');
-		$this->set(compact('locations', 'items'));
+			$listitems = array();
 
-		$listitems = array();
-
-		$this->getReport($listitems, $strFilter);
+			$this->getReport($listitems, $strFilter);
 		
-		$newlistitems = array();
-		foreach (array_keys($locations) as $loca) {
-			if ( isset($listitems[$loca][0]['locations']['parent'] ) && $listitems[$loca][0]['locations']['parent'] == 0) {
-				$newlistitems[$loca] = $listitems[$loca][0]['locations']['parent'];
+			$newlistitems = array();
+			foreach (array_keys($locations) as $loca) {
+				if ( isset($listitems[$loca][0]['locations']['parent'] ) && $listitems[$loca][0]['locations']['parent'] == 0) {
+					$newlistitems[$loca] = $listitems[$loca][0]['locations']['parent'];
+				}
 			}
-		}
 		
-		$this->set('listitems', $listitems);
+			$this->set('listitems', $listitems);
 		
-		$parent = null;
-		App::import('Controller', 'Users');
-		$app = new UsersController;
-		$app->constructClasses();
-		$u = $app->AuthExt->user();
+			$parent = null;
+			App::import('Controller', 'Users');
+			$app = new UsersController;
+			$app->constructClasses();
+			$u = $app->AuthExt->user();
 		
-		$app->findTopParent($u['User']['location_id'], $parent, $u['User']['reach'] );
-		$report = NULL;
-		$this->processItems(1, $parent, $locations, $listitems, $items, $report, $app);
+			$app->findTopParent($u['User']['location_id'], $parent, $u['User']['reach'] );
+			$report = NULL;
+			$this->processItems(1, $parent, $locations, $listitems, $items, $report, $app);
 	
-		$this->set('report', $report);
-		/* echo "<pre>";
-		print_r ($report);
-		echo "</pre>";   */
-		return $report;
+			$this->set('report', $report);
+			/* echo "<pre>";
+			print_r ($report);
+			echo "</pre>";   */
+			return $report;
+		} else {
+
+			App::import('Controller', 'Users');
+
+			App::import('Controller', 'Locations');
+			$location = new LocationsController;
+			$location->constructClasses();
+
+			$users = new UsersController;
+			$users->constructClasses();
+			$user = $users->AuthExt->user();
+			$location_id = $user['User']['location_id'];
+
+			$APPROVED = 1;
+
+			$approved = $location->getChildTree( $location_id, array(
+				'depth' => 1,
+				'parent' => null,
+				'approvalState' => $APPROVED
+			));
+
+			$approved = $location->setAggregates($approved);
+			$approved = $location->flattenTree($approved);
+			$approved = $location->arrayToHash($approved);
+			$this->set('report', $approved);
+			
+			return $approved;
+
+		}
 
 	}
 	
 	function aggregatedChart($strFilter = null) {
-		$allLocations =  $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
+		$allLocations = $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
 		$this->set('allLocations', $allLocations);
 		$report = $this->aggregatedInventory($strFilter);
 		return $report;
 	}
 	
-	function facilityInventory($strFilter = null) {
+	function facilityInventory($strFilter = null) 
+	{
 		$allLocations =  $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
 		$this->set('allLocations', $allLocations);
-		$this->aggregatedInventory($this->data['Search']['search']);
+
+
+		Configure::load('options');
+		$showLive = Configure::read('App.displayMode') == 'L';
+		if ($showLive)
+		{
+			$this->aggregatedInventory($this->data['Search']['search']);
+		} else {
+
+			App::import('Controller', 'Users');
+
+			App::import('Controller', 'Locations');
+			$location = new LocationsController;
+			$location->constructClasses();
+
+			$users = new UsersController;
+			$users->constructClasses();
+			$user = $users->AuthExt->user();
+			$location_id = $user['User']['location_id'];
+
+			$APPROVED = 1;
+
+			$approved = $location->getChildTree( $location_id, array(
+				'depth' => 1,
+				'parent' => null,
+				'approvalState' => $APPROVED
+			));
+
+			$approved = $location->setAggregates($approved);
+			$approved = $location->flattenTree($approved);
+			$approved = $location->arrayToHash($approved);
+			$this->set('report', $approved);
+
+		}
 	}
 	
-	 function graphTimeline() {
+	function graphTimeline() {
+
 		$locations = $this->Stat->Location->find('list',  array('fields' => array('Location.parent_id', 'Location.name', 'Location.id'), array('conditions' => array('id IN ' => implode(",", $this->Session->read("userLocations"))))));
 
 		$items = $this->Stat->Item->find('list');
@@ -242,6 +309,7 @@ class StatsController extends AppController {
 		// foreach ($locations as $loc)
 		// {
 		$listitems = $this->getGraphTimelineReport();
+		
 		// }
 		
 		$graphURL = $this->buildGraphURL($listitems);
@@ -252,18 +320,22 @@ class StatsController extends AppController {
 	
 	//options action to cater for the last n digits
 	function  options() {
+
 		if (!($this->data['Stat']['ndigits'])) {
 			Configure::load('options');
 			$length = Configure::read('Phone.length');
 			$limit = Configure::read('Graph.limit');
 			$threshold = Configure::read('Map.threshold');
 			$appName = Configure::read('App.name');
+			$displayMode = Configure::read('App.displayMode');
+
 			//set the form
 			$this->data['Stat']['ndigits'] = $length;
 			$this->data['Stat']['ndigitsOld'] = $length;
 			$this->data['Stat']['limit'] = $limit;
 			$this->data['Stat']['threshold'] = $threshold;
 			$this->data['Stat']['appName'] = $appName;
+			$this->data['Stat']['displayLive'] = $displayMode;
 
 		} else {
 			if (($this->data['Stat']['ndigitsOld'] < $this->data['Stat']['ndigits']) 
@@ -280,22 +352,26 @@ class StatsController extends AppController {
 				$this->Session->setFlash(__('Report warning must be numeric', true));
 				$this->Stat->invalidate('threshold', 'Please enter numeric value between 1 and 24 for number of months');
 			} else {
-				$options = array(	'Phone' => 	
+				$options = array(
+									'Phone' => 	
 										array('length' => $this->data['Stat']['ndigits'] ),
 									'Graph' =>
 										array('limit' => $this->data['Stat']['limit'] ),
-										
 									'Map' =>
 										array('threshold' => $this->data['Stat']['threshold'] ),
 									'App' =>
-										array('name' => "'". addslashes($this->data['Stat']['appName']) ."'" ),
+										array(
+											'name'        => "'". addslashes($this->data['Stat']['appName']) ."'",
+											'displayMode' => $this->data['Stat']['displayLive']
+										)
 								);
+
 				$this->storeConfig('options', $options );
 
 				$this->Session->setFlash('Options updated successfully', 'flash_success');
 				$this->redirect( '/' );
 			}
 		}
-    }
+	}
 }
 ?>
