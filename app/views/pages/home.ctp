@@ -127,19 +127,34 @@ endif;
 	 echo $this->GoogleMapv3->map(array('div'=>array('height'=>'600', 'width'=>'100%'), 'content' => 'Loading'));
 	echo $this->Html->script($this->GoogleMapv3->apiUrl());
 	$pointsJson = json_decode($this->loaded['ajax']->Form->fields['Stat.JSONFile'], TRUE);
-	
-	foreach($pointsJson['markers'] as $p)
-		{
-			$options = array(
-					'lng' =>$p['point']['longitude'],
-					'lat' =>$p['point']['latitude'], 
-						'content'=>"<span id='infoWindow'>" . $p['html'] . "</span>",
-						'icon'=>$p['markerImage']
-						);
-				 $this->GoogleMapv3->addMarker($options);
-				 //$this->GoogleMapv3->addInfoWindow($options);
-		}
-		echo  $this->GoogleMapv3->script();
+	foreach($pointsJson['markers'] as $k => $p)
+	{
+		$approval_update = isset($update_times['approved'][$p['location']]) ? $update_times['approved'][$p['location']] : "";
+		$latest_update = isset($update_times['non_approved'][$p['location']]) ? $update_times['non_approved'][$p['location']] : "";
+		$update_html = <<<EOL
+		<br>
+<table>
+	<tr>
+		<td><small>Last approved</small></td>
+		<td><small>$approval_update</small></td>
+	</tr>
+	<tr>
+		<td><small>Late updated</small></td>
+		<td><small>$latest_update</small></td>
+	</tr>
+</table>
+EOL;
+		
+		$options = array(
+			'lng' =>$p['point']['longitude'],
+			'lat' =>$p['point']['latitude'], 
+			'content'=>"<span id='infoWindow'>" . $p['html'] . "</span> $update_html",
+			'icon'=>$p['markerImage']
+		);
+		$this->GoogleMapv3->addMarker($options);
+		//$this->GoogleMapv3->addInfoWindow($options);
+	}
+	echo  $this->GoogleMapv3->script();
     
 	echo '</div>';
 	

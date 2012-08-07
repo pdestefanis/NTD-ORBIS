@@ -305,36 +305,74 @@ class StatsController extends AppController {
 		$this->set(compact('locations', 'items'));
 
 		$listitems = array();
-		
-		// foreach ($locations as $loc)
-		// {
+
 		$listitems = $this->getGraphTimelineReport();
-		
-		// }
-		
+
 		$graphURL = $this->buildGraphURL($listitems);
 		$this->set('graphURL', $graphURL);
 		
 		return $graphURL;
 	}
 	
+	function getUpdateTimes()
+	{
+		$approved_query = <<<EOL
+SELECT sts.location_id, sts.created, aps.created 
+FROM stats sts, approvals_stats ap_s, approvals aps 
+WHERE ap_s.approval_id = aps.id AND ap_s.stat_id = sts.id
+EOL;
+		$non_approved_query = <<<EOL
+SELECT sts.location_id, sts.created
+FROM stats sts 
+EOL;
+
+		$all_approved     = $this->Stat->query($approved_query);
+		$all_non_approved = $this->Stat->query($non_approved_query);
+
+		$latest_approved_by_location = array();
+		$latest_non_approved_by_location = array();
+		foreach ($all_non_approved as $one)
+		{
+			if (!isset($latest_approved_by_location[$one['sts']['location_id']]) )
+			{
+				$latest_non_approved_by_location[$one['sts']['location_id']] = $one['sts']['created'];
+			} else
+			{
+				$latest_non_approved_by_location[$one['sts']['location_id']] = $latest_approved_by_location[$one['sts']['location_id']] > $one['sts']['created'] ? $latest_approved_by_location[$one['sts']['location_id']] : $one['sts']['created'];
+			}
+		}
+
+		foreach ($all_approved as $one)
+		{
+			if (!isset($latest_approved_by_location[$one['sts']['location_id']]) )
+			{
+				$latest_approved_by_location[$one['sts']['location_id']] = $one['sts']['created'];
+			} else
+			{
+				$latest_approved_by_location[$one['sts']['location_id']] = $latest_approved_by_location[$one['sts']['location_id']] > $one['sts']['created'] ? $latest_approved_by_location[$one['sts']['location_id']] : $one['sts']['created'];
+			}
+		}
+
+		return array("approved"=>$latest_approved_by_location,"non_approved"=>$latest_non_approved_by_location);
+	}
+	
 	//options action to cater for the last n digits
-	function  options() {
+	function options() {
 
 		if (!($this->data['Stat']['ndigits'])) {
 			Configure::load('options');
-			$length = Configure::read('Phone.length');
-			$limit = Configure::read('Graph.limit');
-			$threshold = Configure::read('Map.threshold');
-			$appName = Configure::read('App.name');
+			$length      = Configure::read('Phone.length');
+			$limit       = Configure::read('Graph.limit');
+			$threshold   = Configure::read('Map.threshold');
+			$appName     = Configure::read('App.name');
 			$displayMode = Configure::read('App.displayMode');
 
 			//set the form
-			$this->data['Stat']['ndigits'] = $length;
-			$this->data['Stat']['ndigitsOld'] = $length;
-			$this->data['Stat']['limit'] = $limit;
-			$this->data['Stat']['threshold'] = $threshold;
-			$this->data['Stat']['appName'] = $appName;
+			$this->data['Stat']['ndigits']     = $length;
+			$this->data['Stat']['ndigitsOld']  = $length;
+			$this->data['Stat']['limit']       = $limit;
+			$this->data['Stat']['threshold']   = $threshold;
+			$this->data['Stat']['appName']     = $appName;
 			$this->data['Stat']['displayLive'] = $displayMode;
 
 		} else {
@@ -354,9 +392,9 @@ class StatsController extends AppController {
 			} else {
 				$options = array(
 									'Phone' => 	
-										array('length' => $this->data['Stat']['ndigits'] ),
+										array('length'    => $this->data['Stat']['ndigits'] ),
 									'Graph' =>
-										array('limit' => $this->data['Stat']['limit'] ),
+										array('limit'     => $this->data['Stat']['limit'] ),
 									'Map' =>
 										array('threshold' => $this->data['Stat']['threshold'] ),
 									'App' =>

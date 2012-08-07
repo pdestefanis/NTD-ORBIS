@@ -123,6 +123,8 @@ class PagesController extends AppController {
 				$Stats->constructClasses();
 				$graphURL = $Stats->graphTimeline();
 				
+				$this->set('update_times', $Stats->getUpdateTimes());
+				
 				$this->set('graphURL', $graphURL);
 		}
 	}

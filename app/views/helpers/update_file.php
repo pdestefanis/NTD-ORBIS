@@ -5,14 +5,15 @@ class UpdateFileHelper extends Helper {
 		return "{\"markers\": [";
 	}
 	function addPointHeader ($num, $data) {
+
 		$fileData = "";
 		if ($num == 0)
 			$fileData .=  "{" . "";
 		else
 			$fileData .=  ",{" . "";
+		$fileData .=  "\"location\": ".$data['id'].",";
 		$fileData .=  "\"point\": {\"latitude\":\"" . $data['locationLatitude'] . "\",\"longitude\":\"" . $data['locationLongitude']. "\"},"  . "";
 		$fileData .=  "\"html\": \"<p><strong><a href=locations/view/" .  $data['id'] . ">" . $data['name'] . "</a></strong></p><br/>";
-	
 		return $fileData;
     }
 
