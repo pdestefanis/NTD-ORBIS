@@ -10,14 +10,18 @@
 		$reportHtml .= "<th>Item</th>";
 		$reportHtml .= "<th>Total</th>";
 		$reportHtml .= "</tr>";
-		foreach ($report[$loc] as $r) {
-				if (isset($report[$r['parent']]))
-					$parent = $report[$r['parent']][$r['iid']]['lname'];
-				else
-					$parent = null;
-				//$parent = $allLocations[$r['parent']];
+		foreach ($report[$loc] as $item_id => $r) {
+			
+			$total_quantity = isset($r['total']) ? $r['total'] : $r['quantity'];
+
+			
+			if (isset($report[$r['parent']]))
+				$parent = $report[$r['parent']][$item_id]['lname'];
+			else
+				$parent = null;
+			//$parent = $allLocations[$r['parent']];
 			$reportHtml .= "<tr><td>" . $r['icode'] . "</td>";
-			$reportHtml .= "<td>" . $r['total'] . "</td></tr>";
+			$reportHtml .= "<td>" . $total_quantity . "</td></tr>";
 		}
 		$locs[] = array($r['lname'], $parent, $r['lname'], $reportHtml); 
 		
