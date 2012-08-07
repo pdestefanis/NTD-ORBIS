@@ -30,20 +30,21 @@
  * @subpackage    cake.app
  */
 class AppController extends Controller {
-  var $components = array('Acl', 'AuthExt', 'Session', 'RequestHandler', 'Access', 'ControllerList');
-  var $helpers = array('Access', 'Html', 'Form');
+	var $components = array('Acl', 'AuthExt', 'Session', 'RequestHandler', 'Access', 'ControllerList');
+	var $helpers = array('Access', 'Html', 'Form');
 
 	function beforeFilter() {
+
 		//$this->AuthExt->allow('*');
 		$this->AuthExt->userScope = array('User.active' => 1);
 		$this->AuthExt->autoRedirect = false;
-		 $this->AuthExt->actionPath = 'controllers/';
+		$this->AuthExt->actionPath = 'controllers/';
 
-		 //Configure AuthComponent
-		 $this->AuthExt->authorize = 'actions';
-		 $this->AuthExt->loginAction = array('controller' => 'users', 'action' => 'login');
-		 $this->AuthExt->logoutRedirect = array('controller' => 'users', 'action' => 'login');
-		 $this->AuthExt->loginRedirect = array('controller' => '/', 'action' => '');
+		//Configure AuthComponent
+		$this->AuthExt->authorize = 'actions';
+		$this->AuthExt->loginAction = array('controller' => 'users', 'action' => 'login');
+		$this->AuthExt->logoutRedirect = array('controller' => 'users', 'action' => 'login');
+		$this->AuthExt->loginRedirect = array('controller' => '/', 'action' => '');
 
 		$this->AuthExt->loginError = "Username and password did not match";
 		$this->AuthExt->authError = "You are not allowed to perform this action";
@@ -68,8 +69,8 @@ class AppController extends Controller {
 				$this->findLocationChildren($c, $children);	
 			}
 		//return $children;
-	 }
-	 
+	}
+	
 	protected function findLocationParent ($loc, &$parents, $reach) {
 		if ($reach != 0) {	
 			$parent = $this->User->Location->find('list', array('callbacks' => 'false', 'fields' => array('Location.id', 'Location.parent_id'), 'conditions' => array( 'Location.id' => $loc, 'Location.deleted = 0')));
@@ -82,10 +83,10 @@ class AppController extends Controller {
 		} else {
 			$parents[] = $loc; 
 		}
-	 }
+	}
 	 
-	protected function findTopParent ($loc, &$parents, $reach) {
-		if ($reach >= 0) {	
+	protected function findTopParent ($loc, &$parents, $reach) {	
+		if ($reach >= 0) {
 			$parent = $this->User->Location->find('list', array('callbacks' => 'false','fields' => array('Location.id', 'Location.parent_id'), 'conditions' => array( 'Location.id' => $loc, 'Location.deleted = 0')));
 			if ( $parent[$loc] == 0) { //exit top
 				$parents = 0;
@@ -96,7 +97,7 @@ class AppController extends Controller {
 		} else {
 			$parents = $loc; 
 		}
-	 }
+	}
 	 
 	protected function findLevel ($loc, &$level) {
 			$parent = $this->Location->find('list', array('callbacks' => 'false','fields' => array('Location.id', 'Location.parent_id'), 'conditions' => array( 'Location.id' => $loc)));
@@ -106,7 +107,7 @@ class AppController extends Controller {
 			$level += 1;
 			$parent =  $parent[$loc]; 
 			$this->findLevel($parent, $level);
-	 }
+	}
 	 
 	protected function findLocationFirstChildren ($loc, &$children) {
 		$child = $this->Stat->Location->find('list', array('callbacks' => 'false','conditions' => array( 'parent_id' => $loc, 'deleted = 0')));
@@ -116,7 +117,7 @@ class AppController extends Controller {
 				$children[] = $c; 
 			}
 		//return $children;
-	 }
+	}
 	
 	protected function getReport(&$listitems, $strFilter = null) {
 		$query = "SELECT quantity_after, items.code as icode, items.name as dname, items.id as did, created, phone_id as pid, stat_items.location_id, stat_items.id as sid, stat_items.created as screated, locations.id as lid, locations.name as lname, locations.parent_id parent ";
@@ -148,6 +149,7 @@ class AppController extends Controller {
 		//load configuraion options
 		Configure::load('graphs');
 		$limit = Configure::read('Graph.limit');
+		$showLive = Configure::read('App.displayMode') == 'L';
 
 		$listitems = array();
 		$query = "SELECT quantity_after, items.code as code, stat_items.location_id, stat_items.id as sid, stat_items.created ";
@@ -163,6 +165,28 @@ class AppController extends Controller {
 		$query .= "ORDER by stat_items.created ASC ";
 		
 		$listd = $this->Stat->query($query);
+
+		$all_stats = $this->Stat->find("all", array( "recursive" => 1 ));
+		$listd = array();
+		foreach ($all_stats as $stat)
+		{
+			if ($showLive && empty($stat['Approval'])) continue;
+
+			$result_object = array(
+				'stat_items' => array(
+					'quantity_after' => $stat['Stat']['quantity_after'],
+					'location_id'    => $stat['Stat']['location_id'],
+					'sid'            => $stat['Stat']['id'],
+					'created'        => $stat['Stat']['created'],
+				),
+				'items' => array(
+					'code' => $stat['Item']['code']
+				)
+			);
+
+			array_push($listd, $result_object);
+
+		}
 
 		foreach ($listd as $ld){
 			//$listitems[$ld['stat_items']['location_id']]['values'][$ld['items']['code']][1] = '';
@@ -500,7 +524,9 @@ class AppController extends Controller {
 		$content = '';
 		if (!empty($data)) {
 			foreach ($data as $key => $value) {
-				$content .= sprintf("\$config['%s']['%s'] = %s;\n", $key, key($value), $value[key($value)]);
+				foreach ($value as $subKey => $subValue) {
+					$content .= sprintf("\$config['%s']['%s'] = %s;\n", $key, $subKey, $subValue);
+				}
 			}
 		}
 	 
