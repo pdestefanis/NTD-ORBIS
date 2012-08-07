@@ -148,11 +148,11 @@ class AppController extends Controller {
 	protected function getGraphTimelineReport() {
 		//load configuraion options
 		Configure::load('graphs');
-		$limit = Configure::read('Graph.limit');
+		$limit    = Configure::read('Graph.limit');
 		$showLive = Configure::read('App.displayMode') == 'L';
 
 		$listitems = array();
-		$query = "SELECT quantity_after, items.code as code, stat_items.location_id, stat_items.id as sid, stat_items.created ";
+		$query  = "SELECT quantity_after, items.code as code, stat_items.location_id, stat_items.id as sid, stat_items.created ";
 		$query .= "FROM stats stat_items, items ";
 		$query .= "WHERE stat_items.item_id = items.id ";
 		//$query .= "AND stat_items.phone_id = phones.id ";
@@ -319,17 +319,14 @@ class AppController extends Controller {
 			$listitems[$key]['max'] = $max;
 			//colors for data
 			$collor = array();
-			for ($i = 0; $i < count($listitems[$key]['values']); $i++){
+			for ($i = 0; $i < count($listitems[$key]['values']); $i++) {
 				$collor[] = $this->get_random_color();
 			}
 			$listitems[$key]['colors'] = implode (",", $collor);
 			
 			
-		} //foreach listitems
-		/*  echo "<pre>";
-			print_r($listitems);
-			echo "<pre>";
-		 */
+		}
+		
 		return $listitems;
 	}
 	//random color generation for graph chart
