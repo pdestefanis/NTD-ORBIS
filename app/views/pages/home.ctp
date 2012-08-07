@@ -117,22 +117,22 @@ endif;
   <h2><?php 
  Configure::load('options');
  $appName = Configure::read('App.name');
+ $showLive = Configure::read('App.displayMode');
 			
   __($appName); ?></h2>
 
  <?php
 	echo '<br/>';
 	echo '<div class="cont">';
-	
-	 echo $this->GoogleMapv3->map(array('div'=>array('height'=>'600', 'width'=>'100%'), 'content' => 'Loading'));
+	echo $this->GoogleMapv3->map(array('div'=>array('height'=>'600', 'width'=>'100%'), 'content' => 'Loading'));
 	echo $this->Html->script($this->GoogleMapv3->apiUrl());
 	$pointsJson = json_decode($this->loaded['ajax']->Form->fields['Stat.JSONFile'], TRUE);
 	foreach($pointsJson['markers'] as $k => $p)
 	{
-		$approval_update = isset($update_times['approved'][$p['location']]) ? $update_times['approved'][$p['location']] : "";
-		$latest_update = isset($update_times['non_approved'][$p['location']]) ? $update_times['non_approved'][$p['location']] : "";
+		$approval_update = isset($update_times['approved'][$p['location']]) ? $this->Time->timeAgoInWords(strtotime($update_times['approved'][$p['location']])) : "";
+		$latest_update = isset($update_times['non_approved'][$p['location']]) ? $this->Time->timeAgoInWords(strtotime($update_times['non_approved'][$p['location']])) : "";
 		$update_html = <<<EOL
-		<br>
+<br>
 <table>
 	<tr>
 		<td><small>Last approved</small></td>
@@ -144,7 +144,7 @@ endif;
 	</tr>
 </table>
 EOL;
-		
+		$update_html = ($approval_update!=""||$latest_update!="") ? $update_html : "";
 		$options = array(
 			'lng' =>$p['point']['longitude'],
 			'lat' =>$p['point']['latitude'], 
