@@ -36,8 +36,14 @@
 	
 		if (!empty($report[$loc])) {
 
-			foreach ($report[$loc] as $r) { 
-				if ($r['own'] == 0)
+			foreach ($report[$loc] as $k => $r) {
+				$item_name      = isset($r['iname'])    ? $r['iname']    : $r['name']; 
+				$item_id        = isset($r['iid'])      ? $r['iid']      : $k;
+				$local_quantity = isset($r['own'])      ? $r['own']      : $r['quantity'];
+				$when_updated   = isset($r['screated']) ? $r['screated'] : $r['last_updated'];
+				$last_stat      = isset($r['sid'])      ? $r['sid']      : $r['last_stat'];
+				
+				if ($local_quantity == 0)
 					continue;
 				?>
 				<tr <?php echo $class;?>>
@@ -47,13 +53,13 @@
 						//echo $this->Html->link($r['lname'], array('controller' => 'locations', 'action' => 'view', $loc)); ?>&nbsp;</td>
 					<td><?php 
 						if ($r['parent'] != 0)
-								echo $access->checkHtml('Locations/view', 'text', $allLocations[$r['parent']], '/locations/view/' . $r['parent'] );
+							echo $access->checkHtml('Locations/view', 'text', $allLocations[$r['parent']], '/locations/view/' . $r['parent'] );
 							//echo $this->Html->link($allLocations[$r['parent']], array('controller' => 'locations', 'action' => 'view', $r['parent'])); ?>&nbsp;</td>
 					<td><?php 
-						echo $access->checkHtml('Items/view', 'text', $r['iname'], '/items/view/' . $r['iid'] );
+						echo $access->checkHtml('Items/view', 'text', $item_name, '/items/view/' . $item_id );
 					?>&nbsp;</td>
-					<td class='number'><?php echo $r['own']; ?>&nbsp;</td>
-					<td><?php echo $this->Html->link($r['screated'], array('controller' => 'stats', 'action' => 'view', $r['sid'])); ?>&nbsp;</td>
+					<td class='number'><?php echo $local_quantity; ?>&nbsp;</td>
+					<td><?php echo $this->Html->link($when_updated, array('controller' => 'stats', 'action' => 'view', $last_stat)); ?>&nbsp;</td>
 					
 				</tr>
 		<?php } 
