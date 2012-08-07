@@ -51,13 +51,25 @@
 			$dbManip->setSent ($smsManip->getPhoneId(), $smsManip->getCurrDate(), $raw, $smsManip->getReceivedId ());
 			echo  $raw;
 			exit;
-		} else if ($sms->getAction()  == 'approve') {
+		} else if ($sms->getAction() == 'pending') {
+			$pId = $smsManip->getPhoneId();
+			$raw = file_get_contents("/approvals/rest/$pId");
+			echo $raw;
+			exit;
+		} else if ($sms->getAction() == 'approve') {
 			$smsManip->setUserId(); //check that user is associated with phone
 			$smsManip->findChildren($smsManip->getLocationId()); //get all children for location
 			$sum = $smsManip->getChildrenAndParentSum(); //sum children and the paret - parent is the users location
-			
+
+			$pId = $smsManip->getPhoneId();
+
 			//two cases an item and all
 			if (strtoupper($sms->getItem() ) == "ALL") {
+
+				$raw = file_get_contents("/approvals/rest/$pId/ALL");
+				echo $raw;
+				exit;
+				
 				$dbManip->approveAll($sum, $smsManip->getApprovalId());
 				$raw = "All quantities have been approved: ";
 				foreach (array_keys($sum) as $s) {
@@ -67,6 +79,10 @@
 				echo $raw;
 				exit;
 			} else {
+				$item = $sms->getItem();
+				$raw = file_get_contents("/approvals/rest/$pId/$item";
+				echo $raw;
+				exit;
 
 				$dbManip->approveOne($smsManip->getItemId(), $sum, $smsManip->getApprovalId());
 				$raw = "The following quantities have been approved: ". $sms->getItem() . " quanitity: " . $sum[$smsManip->getItemId()]['sum'];
