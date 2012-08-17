@@ -12,9 +12,7 @@
 
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
-		<?php
-		echo $this->Form->create('Approval', array('action'=>'add'));
-		?>
+		<?php echo $this->Form->create('Approval', array('action'=>'add')); ?>
 	
 	<ul>
 		<input type='hidden' name='stat_ids' id='stat_ids' value="">

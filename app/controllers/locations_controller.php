@@ -333,11 +333,13 @@ class LocationsController extends AppController {
 			{
 				$child_with_aggregates = $this->setAggregates($child_value);
 				$node['children'][$child_key] = $child_with_aggregates;
+
 				foreach ($child_with_aggregates['total_items'] as $one_item_key => $one_item_value)
 				{
 					if (isset($aggregate_items[$one_item_key]))
 					{
 						$aggregate_items[$one_item_key]['quantity'] += $one_item_value['quantity'];
+						$aggregate_items[$one_item_key]['stat_ids'] = array_merge($one_item_value['stat_ids'], $aggregate_items[$one_item_key]['stat_ids']);
 					} else
 					{
 						$aggregate_items[$one_item_key] = $one_item_value;
@@ -345,18 +347,21 @@ class LocationsController extends AppController {
 				}
 			}
 
+
 			$total_items = $node['local_items'];
 			$node['aggregate_items'] = $aggregate_items;
-			foreach ($aggregate_items as $agg_key => $agg_val)
+			foreach ($aggregate_items as $agg_item_id => $agg_val)
 			{
-				if (isset($total_items[$agg_key]))
+				if (isset($total_items[$agg_item_id]))
 				{
-					$total_items[$agg_key]['quantity'] += $agg_val['quantity'];
+					$total_items[$agg_item_id]['quantity'] += $agg_val['quantity'];
 				} else
 				{
-					$total_items[$agg_key] = $agg_val;
+					$total_items[$agg_item_id] = $agg_val;
 				}
 			}
+
+
 			$node['total_items'] = $total_items;
 		}
 
@@ -433,17 +438,26 @@ class LocationsController extends AppController {
 				}
 
 				$result[$element['lid']][$item_key]['local_items'] = array();
-				foreach ( $element['local_items'] as $agg_key => $agg_value )
+				foreach ( $element['local_items'] as $loc_key => $loc_value )
 				{
-					$result[$element['lid']][$item_key]['local_items'][$agg_key] = $agg_value;
+					$result[$element['lid']][$item_key]['local_items'][$loc_key] = $loc_value;
 				}
 
 				$result[$element['lid']][$item_key]['total_items'] = array();
-				foreach ( $element['total_items'] as $agg_key => $agg_value )
+				foreach ( $element['total_items'] as $tot_key => $tot_value )
 				{
-					$result[$element['lid']][$item_key]['total_items'][$agg_key] = $agg_value;
+					$result[$element['lid']][$item_key]['total_items'][$tot_key] = $tot_value;
 				}
 
+				$aggregate_stats = array();
+				$local_stats     = array();
+				
+				if (isset($element['aggregate_items'][$item_key]['stat_ids']))
+					$aggregate_stats = $element['aggregate_items'][$item_key]['stat_ids'];
+				if (isset($element['local_items'][$item_key]['stat_ids']))
+					$local_stats     = $element['local_items'][$item_key]['stat_ids'];
+
+				$result[$element['lid']][$item_key]['total_items'][$item_key]['stat_ids'] = array_merge($local_stats, $aggregate_stats);
 
 				if (isset($element['children_ids']))
 					$result[$element['lid']][$item_key]['children_ids'] = $element['children_ids'];

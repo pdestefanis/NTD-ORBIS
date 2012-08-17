@@ -6,6 +6,7 @@
 	echo "
 			<th>".__('Facility',1)."</th>
 			<th>".__('Level',1)."</th>
+			<th>".__('Approver',1)."</th>
 			<th>".__('Item',1)."</th>
 			<th>".__('Current Total Count',1)."</th>
 			<th>".__('Total Approved Count',1)."</th>
@@ -26,6 +27,7 @@
 
 			$approved_quantity = $item['quantity'];
 			$total_quantity    = $all[$location_id][$item_id]['quantity'];
+			$approver          = isset($item['approver']) ? $item['approver'] : "";
 
 			$last_updated      = $all[$location_id][$item_id]['last_updated'];
 			$last_approval     = isset($approved[$location_id][$item_id]) ? $approved[$location_id][$item_id]['last_approval'] : "";
@@ -34,6 +36,7 @@
 		<tr<?php echo $row_class;?>>
 			<td><?php echo $facility; ?></td>
 			<td><?php echo $depth; ?></td>
+			<td><?php echo $approver; ?></td>
 			<td><?php echo $item_name; ?></td>
 			<td><?php echo $total_quantity; ?></td>
 			<td><?php echo $approved_quantity; ?></td>
