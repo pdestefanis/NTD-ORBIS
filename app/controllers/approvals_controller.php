@@ -139,12 +139,13 @@ class ApprovalsController extends AppController {
 
 	function restIndex ($pId = 0)
 	{
+		$this->autoRender = false;
 
+		if ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) return;
+		
 		App::import('Controller', 'Phones');
 		App::import('Controller', 'Users');
 		App::import('Controller', 'Locations');
-
-
 
 		$phones = new PhonesController;
 		$phones->constructClasses();
@@ -204,11 +205,12 @@ class ApprovalsController extends AppController {
 		}
 
 		echo implode("\n", $items);
-		$this->autoRender = false;
 	}
 	
 	function restApprove($mId=null, $pId=null, $iCode=null)
 	{
+		$this->autoRender = false;
+		if ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) return;
 
 		echo "m:$mId, pid:$pId, iCode:$iCode";
 		App::import('Controller', 'Phones');
@@ -279,8 +281,6 @@ class ApprovalsController extends AppController {
 		}
 
 		echo "\n stats ids: ". implode(",",$all_stats_ids);
-
-		$this->autoRender = false;
 	}
 
 	function approvalsByLocation()
