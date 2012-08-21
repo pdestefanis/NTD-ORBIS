@@ -16,11 +16,11 @@ echo '<br /><br />' ;
 				'value' =>  $this->Form->value('threshold') ));
 		echo $this->Form->input('appName', array('label' => 'Application Name', 
 				'value' =>  $this->Form->value('appName') ));
-		echo $this->Form->input('displayLive', array(
-				'options' => array( "0" => "Approved", 
-														"1" => "Live"),
-				'legend' => 'Data Display Mode',
-				'value'  => $this->Form->value('displayLive'),
+		echo $this->Form->input('displayMode', array(
+				'options' => array( "approved" => "Approved data only", 
+									"all" => "All data"),
+				'legend' => 'Data to display',
+				'value'  => $this->Form->value('displayMode'),
 				'type'   => 'radio'
 		));
 	?>

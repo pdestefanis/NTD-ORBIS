@@ -68,6 +68,7 @@ class PagesController extends AppController {
     }
 	
 	function display() {
+
 		$path = func_get_args();
 		//$this->buildMenus();
 		$count = count($path);
@@ -140,7 +141,7 @@ class PagesController extends AppController {
 				//get current date less report threshold
 				Configure::load('options');
 				$threshold = Configure::read('Map.threshold');
-				$showLive = Configure::read('App.displayMode') == 'L';
+				$showAll = Configure::read('App.displayMode') == 'all';
 				
 				$currDate = date("Y-m-d H:i:s");
 				$dateLessMonths = strtotime ('-'.$threshold.' month' , strtotime ($currDate)) ;
@@ -150,7 +151,7 @@ class PagesController extends AppController {
 				$last_stat_by_location = array();
 				foreach ($all_stats as $stat)
 				{
-					if ($showLive && empty($stat['Approval'])) continue;
+					if ($showAll && empty($stat['Approval'])) continue;
 					if ( isset( $last_stat_by_location[$stat['Stat']['location_id']] ) )
 					{
 						if ($last_stat_by_location[$stat['Stat']['location_id']]['Stat']['created'] < $stat['Stat']['created'])

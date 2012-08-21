@@ -149,7 +149,7 @@ class AppController extends Controller {
 		//load configuraion options
 		Configure::load('graphs');
 		$limit    = Configure::read('Graph.limit');
-		$showLive = Configure::read('App.displayMode') == 'L';
+		$showAll = Configure::read('App.displayMode') == 'all';
 
 		$listitems = array();
 		$query  = "SELECT quantity_after, items.code as code, stat_items.location_id, stat_items.id as sid, stat_items.created ";
@@ -170,7 +170,7 @@ class AppController extends Controller {
 		$listd = array();
 		foreach ($all_stats as $stat)
 		{
-			if ($showLive && empty($stat['Approval'])) continue;
+			if ($showAll && empty($stat['Approval'])) continue;
 
 			$result_object = array(
 				'stat_items' => array(

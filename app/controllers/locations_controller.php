@@ -157,7 +157,7 @@ class LocationsController extends AppController {
 			{
 
 				$grandchildren = $this->getChildTree( $child , array(
-					'depth'       => $options['depth'] + 1,
+					'depth'       => $options['depth']+1,
 					'parent'      => $location_id,
 					'approvalState' => $options['approvalState']
 				));
@@ -166,7 +166,7 @@ class LocationsController extends AppController {
 				$result[$child] = array(
 					'parent'      => $location_id,
 					'lid'         => $child,
-					'depth'       => $options['depth'] + 1,
+					'depth'       => $options['depth']+1,
 					'lname'       => $attrs['lname'],
 					'local_items' => $attrs['items'],
 					'children'    => $grandchildren
@@ -463,6 +463,34 @@ class LocationsController extends AppController {
 					$result[$element['lid']][$item_key]['children_ids'] = $element['children_ids'];
 				if (isset($element['parent']))
 					$result[$element['lid']][$item_key]['parent'] = $element['parent'];
+			}
+		}
+		return $result;
+	}
+	
+	function strFilter( $locations, $strFilter )
+	{
+
+		if ($strFilter==null||$strFilter=='') return $locations;
+		
+		$result = array();
+		foreach ($locations as $location_key => $location_value )
+		{
+			foreach ($location_value as $item_key => $item_value )
+			{
+				$haystack = strtolower($item_value['icode']).
+				            strtolower($item_value['name']).
+				            strtolower($item_value['approver']).
+				            strtolower($item_value['lname']).
+				            strtolower($item_value['last_approval']).
+				            strtolower($item_value['last_updated']);
+				if (strpos($haystack, $strFilter) !== false)
+				{
+					if (!isset($result[$location_key])) $result[$location_key] = array();
+
+					$result[$location_key][$item_key] = $item_value;
+
+				}
 			}
 		}
 		return $result;

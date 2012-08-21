@@ -175,17 +175,47 @@ class StatsController extends AppController {
 
 	
 	
-	function aggregatedInventory($strFilter = null) {
+	function aggregatedInventory($strFilter = null, $displayOption = null) {
 
-		$showLive = (Configure::read('App.displayMode') == "L");
+		if (isset($this->data['displayModeSelector'])) {
+			$displayOption = $this->data['displayModeSelector']['displayMode'];
+		} else {
+			if (isset($this->data['Search'])) {
+				$displayOption = $this->data['Search']['displayMode'];
+			} else {
+				$displayOption = null;
+			}
+		}
+
+		// displayOption overrides the configuration options
+		if ($displayOption) {
+			$showAll = $displayOption == 'all';
+		} else {
+			Configure::load('options');
+			$showAll = Configure::read('App.displayMode') == 'all';
+		}
+
+		if (isset($this->data['Search'])) {
+			$strFilter = $this->data['Search']['search'];
+		}
+
 
 		//print_r($this->Stat->Location->Alert->find('all'));
 		$locations = $this->Stat->Location->find('list',  
-						array('fields' => array('Location.parent_id', 'Location.name', 'Location.id'), 
-						array('conditions' => array('id IN ' => implode(",", $this->Session->read("userLocations"))))
-								)
-						);
-		if ($showLive)
+			array(
+				'fields' => array('Location.parent_id', 'Location.name', 'Location.id'), 
+				array(
+					'conditions' => 
+						array(
+							'id IN ' => implode(",", $this->Session->read("userLocations"))
+						)
+				)
+			)
+		);
+
+		$this->set('showAll', $showAll);
+
+		if ($showAll)
 		{
 			$items = $this->Stat->Item->find('list');
 			$this->set(compact('locations', 'items'));
@@ -242,6 +272,7 @@ class StatsController extends AppController {
 			$approved = $location->setAggregates($approved);
 			$approved = $location->flattenTree($approved);
 			$approved = $location->arrayToHash($approved);
+			$approved = $location->strFilter($approved, $strFilter);
 			$this->set('report', $approved);
 			
 			return $approved;
@@ -251,24 +282,62 @@ class StatsController extends AppController {
 	}
 	
 	function aggregatedChart($strFilter = null) {
+		
+		
+		if (isset($this->data['displayModeSelector'])) {
+			$displayOption = $this->data['displayModeSelector']['displayMode'];
+		} else {
+			$displayOption = null;
+		}
+
+		// displayOption overrides the configuration options
+		if ($displayOption) {
+			$showAll = $displayOption == 'all';
+		} else {
+			Configure::load('options');
+			$showAll = Configure::read('App.displayMode') == 'all';
+		}
+
+		$this->set('showAll', $showAll);
+		
 		$allLocations = $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
 		$this->set('allLocations', $allLocations);
-		$report = $this->aggregatedInventory($strFilter);
+		$report = $this->aggregatedInventory($strFilter, $displayOption);
 		return $report;
 	}
 	
 	function facilityInventory($strFilter = null) 
 	{
-		$allLocations =  $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
-		$this->set('allLocations', $allLocations);
 
-
-		Configure::load('options');
-		$showLive = Configure::read('App.displayMode') == 'L';
-		if ($showLive)
-		{
-			$this->aggregatedInventory($this->data['Search']['search']);
+		if (isset($this->data['displayModeSelector'])) {
+			$displayOption = $this->data['displayModeSelector']['displayMode'];
 		} else {
+			if (isset($this->data['Search'])) {
+				$displayOption = $this->data['Search']['displayMode'];
+			} else {
+				$displayOption = null;
+			}
+		}
+
+		// displayOption overrides the configuration options
+		if ($displayOption) {
+			$showAll = $displayOption == 'all';
+		} else {
+			Configure::load('options');
+			$showAll = Configure::read('App.displayMode') == 'all';
+		}
+
+		if (isset($this->data['Search'])) {
+			$strFilter = $this->data['Search']['search'];
+		} else {
+			$strFilter = null;
+		}
+			
+		if ($showAll)
+		{
+			$this->aggregatedInventory($strFilter, $displayOption);
+		} else
+		{
 
 			App::import('Controller', 'Users');
 
@@ -292,9 +361,17 @@ class StatsController extends AppController {
 			$approved = $location->setAggregates($approved);
 			$approved = $location->flattenTree($approved);
 			$approved = $location->arrayToHash($approved);
+			$approved = $location->strFilter($approved, $strFilter);
 			$this->set('report', $approved);
 
 		}
+
+		$allLocations =  $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
+		$this->set('allLocations', $allLocations);
+		$this->set('showAll', $showAll);
+
+
+
 	}
 	
 	function graphTimeline() {
@@ -373,7 +450,7 @@ EOL;
 			$this->data['Stat']['limit']       = $limit;
 			$this->data['Stat']['threshold']   = $threshold;
 			$this->data['Stat']['appName']     = $appName;
-			$this->data['Stat']['displayLive'] = $displayMode;
+			$this->data['Stat']['displayMode'] = $displayMode;
 
 		} else {
 			if (($this->data['Stat']['ndigitsOld'] < $this->data['Stat']['ndigits']) 
@@ -400,7 +477,7 @@ EOL;
 									'App' =>
 										array(
 											'name'        => "'". addslashes($this->data['Stat']['appName']) ."'",
-											'displayMode' => $this->data['Stat']['displayLive']
+											'displayMode' => "'". $this->data['Stat']['displayMode']. "'"
 										)
 								);
 

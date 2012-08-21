@@ -1,12 +1,16 @@
-<div id="sitems">
+<div id="LoadingDiv" style="display:none;"><img src="../img/ajax-loader.gif" alt="" /></div>
+
 <?php echo $javascript->link('prototype', false); ?>
-<?php
-	echo $crumb->getHtml('Aggregated Inventory Chart', null, '' ) ;
-	echo '<br /><br />' ;
-?> 
+<div id="aggregated_chart">
+	<?php
+		echo $crumb->getHtml('Aggregated Inventory Chart', null, '' ) ;
+		echo '<br /><br />' ;
+	?> 
 		
-		
-<div class="drugs index">
-	<?php  echo $this->element('google_chart'); ?>
+	<div class="drugs index">
+		<?php  echo $this->element('aggregated_chart'); ?>
+	</div>
+
 </div>
+
 </div>

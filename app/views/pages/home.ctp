@@ -117,7 +117,7 @@ endif;
   <h2><?php 
  Configure::load('options');
  $appName = Configure::read('App.name');
- $showLive = Configure::read('App.displayMode');
+ $showAll = Configure::read('App.displayMode');
 			
   __($appName); ?></h2>
 
