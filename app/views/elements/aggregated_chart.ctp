@@ -39,6 +39,36 @@
 ?>
 
 
+	<div class="select_display_mode index">
+		<?php
+			$radioOptions = array(
+				'type'  => 'radio',
+				'legend' => false,
+				'label' => 'Show all data',
+				'options' => array('all'=>'Show all data', 'approved'=>'Approved data only')
+			);
+		
+			if ($showAll) 
+			{
+				$radioOptions['default'] = 'all';
+				
+				echo "<p>These data include data that have no yet been officially approved. These data shall not be published without official approval. You can change this setting in ";
+				$access->checkHtml('Stats/options', 'link', 'Options ','/stats/options' );
+				echo ".</p><br>";
+			} else
+			{
+				$radioOptions['default'] = 'approved';
+			}
+			/*
+			echo $this->Form->create('displayModeSelector', array('id'=>'displayModeSelector'));
+			echo $this->Form->input('displayMode', $radioOptions);
+			echo $ajax->submit('Refresh', array('url'=> '', 'update' => 'aggregated_chart', 'loading' => '$(\'LoadingDiv\').show()', 'loaded' => '$(\'LoadingDiv\').hide()' )); 
+			echo $this->Form->end();
+			*/
+		?>
+	</div>
+
+
 	
 
 	
