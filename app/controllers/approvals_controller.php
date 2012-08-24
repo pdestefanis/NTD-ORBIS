@@ -12,7 +12,7 @@ class ApprovalsController extends AppController {
 	function beforeFilter()
 	{
 		parent::beforeFilter();
-		$this->AuthExt->allow(array('restIndex', 'restApproval')); 
+		$this->AuthExt->allow(array('restPending', 'restApproval')); 
 	}
 	
 	function index($strFilter = null) 
@@ -137,7 +137,7 @@ class ApprovalsController extends AppController {
 
 	}
 
-	function restIndex ($pId = 0)
+	function restPending ($pId = 0)
 	{
 		$this->autoRender = false;
 
@@ -164,8 +164,10 @@ class ApprovalsController extends AppController {
 			"fields"     => array("User.reach")
 		));
 			
-		if ( ! empty($user) )
-		{
+		if ( empty($user) ) {
+			echo "Phone not authorized.";
+			return;
+		} else {
 			$user_reach = array_shift(array_values($user));
 			if ($user_reach != 0)
 			{
@@ -235,8 +237,11 @@ class ApprovalsController extends AppController {
 			"fields"     => array("User.reach")
 		));
 			
-		if ( ! empty($user) )
+		if ( empty($user) )
 		{
+			echo "Phone not authorized."
+			return;
+		} else {
 			$user_reach = array_shift(array_values($user));
 			if ($user_reach != 0)
 			{
@@ -265,7 +270,7 @@ class ApprovalsController extends AppController {
 
 		$quit = false;
 		$all_stats_ids = array();
-		echo "Approved\n ";
+		echo "Approvals\n ";
 		$location = $pending[$location_id];
 		foreach ($location as $key => $item)
 		{
@@ -279,8 +284,21 @@ class ApprovalsController extends AppController {
 				echo "$name: $quantity";
 			}
 		}
+		
+		$saveData = array(
+			"Approval" => array( "user_id" => $user['User']['id'] ),
+			"Stat"     => array( "Stat" => $all_stats_ids )
+		);
 
-		echo "\n stats ids: ". implode(",",$all_stats_ids);
+		$this->Approval->create();
+		if ($this->Approval->save($saveData)) {
+			echo "Approvals saved.";
+		} else {
+			echo "Approvals not saved. Please try again.";
+		}
+
+		//echo "\n stats ids: " . implode(",", $all_stats_ids);
+
 	}
 
 	function approvalsByLocation()
