@@ -173,8 +173,6 @@ class StatsController extends AppController {
 			$this->render('update_select');
 	}
 
-	
-	
 	function aggregatedInventory($strFilter = null, $displayOption = null) {
 
 		if (isset($this->data['displayModeSelector'])) {
