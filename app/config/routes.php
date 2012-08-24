@@ -24,7 +24,7 @@
 
 
 	Router::connect('/approvals/rest/:mId/:pId/:iCode', array('controller' => 'approvals', 'action' => 'restApprove'), array('pass' => array('mId', 'pId','iCode')));
-	Router::connect('/approvals/rest/:pId',           array('controller' => 'approvals', 'action' => 'restIndex'),   array('pass'=>array('pId')));
+	Router::connect('/approvals/rest/:pId',           array('controller' => 'approvals', 'action' => 'restPending'),   array('pass'=>array('pId')));
 
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
