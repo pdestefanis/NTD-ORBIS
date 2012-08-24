@@ -35,7 +35,7 @@ class AppController extends Controller {
 
 	function beforeFilter() {
 
-		$this->AuthExt->allow('*');
+		//$this->AuthExt->allow('*');
 		$this->AuthExt->userScope = array('User.active' => 1);
 		$this->AuthExt->autoRedirect = false;
 		$this->AuthExt->actionPath = 'controllers/';

@@ -136,17 +136,17 @@ class UsersController extends AppController {
 			}
 
 		}
+
 		//only allow admins to select admin roles
-		
 		$u = $this->AuthExt->user();
 		$g[] = $u['User']['role_id'];
 		if (isset($u['User']['Role']))
 			foreach ($u['User']['Role'] as $role) 
 				$g[] = $role;
-		//if (in_array( 1, $g))
+		if (in_array( 1, $g))
 			$roles = $this->User->Role->find('list');
-		//else
-		//	$roles = $this->User->Role->find('list', array('conditions' => array('id !='. 1) ));
+		else
+		$roles = $this->User->Role->find('list', array('conditions' => array('id !='. 1) ));
 		$phones = $this->User->Phone->find('list', array( 'conditions' => array('deleted' => 0)));
 		$locations = $this->User->Location->find('list', array('conditions' => array('deleted' => 0)));
 		$this->set(compact('roles', 'locations', 'phones'));
