@@ -239,7 +239,7 @@ class ApprovalsController extends AppController {
 			
 		if ( empty($user) )
 		{
-			echo "Phone not authorized."
+			echo "Phone not authorized.";
 			return;
 		} else {
 			$user_reach = array_shift(array_values($user));
