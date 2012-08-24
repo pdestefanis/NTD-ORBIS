@@ -69,6 +69,10 @@ class PagesController extends AppController {
 	
 	function display() {
 
+		if (isset($this->data['pages']['displayMode']) && $this->data['pages']['displayMode'] == "all") {
+			$this->Session->write("displayOption", true);
+		}
+
 		$path = func_get_args();
 		//$this->buildMenus();
 		$count = count($path);
@@ -87,7 +91,6 @@ class PagesController extends AppController {
 			$title_for_layout = Inflector::humanize($path[$count - 1]);
 		}
 		$this->updateJSONFile();
-		
 		$this->set(compact('page', 'subpage', 'title_for_layout'));
 		$this->render(implode('/', $path));
 	}
@@ -141,8 +144,12 @@ class PagesController extends AppController {
 				//get current date less report threshold
 				Configure::load('options');
 				$threshold = Configure::read('Map.threshold');
-				$showAll = Configure::read('App.displayMode') == 'all';
-				
+				if ($this->Session->check("displayOption") && $this->Session->read("displayOption") == true) {
+					$showAll = true;
+				} else {
+					$showAll = Configure::read('App.displayMode') == 'all';
+				}
+
 				$currDate = date("Y-m-d H:i:s");
 				$dateLessMonths = strtotime ('-'.$threshold.' month' , strtotime ($currDate)) ;
 				$dateLessMonths = date("Y-m-d H:i:s" , $dateLessMonths);

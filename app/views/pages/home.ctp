@@ -3,9 +3,16 @@
 	$javascript->link('common', false); 
 	echo $this->Html->css('map');
 
-?>
- 
-<?php
+	if (!$this->Session->check("displayOption"))
+	{
+		Configure::load('options');
+		$showAll = Configure::read('App.displayMode') == 'all';
+	} else
+	{
+		$showAll = ($this->Session->read("displayOption") == true);
+		$this->Session->delete("displayOption");
+	}
+
 	echo $crumb->getHtml('Home', 'reset' ) ;
 	echo '<br /><br />' ;
 ?>
@@ -117,7 +124,6 @@ endif;
   <h2><?php 
  Configure::load('options');
  $appName = Configure::read('App.name');
- $showAll = Configure::read('App.displayMode');
 			
   __($appName); ?></h2>
 
@@ -157,7 +163,36 @@ EOL;
 	echo  $this->GoogleMapv3->script();
     
 	echo '</div>';
-	
+
+	?>
+
+	<div class="select_display_mode">
+		<?php
+			$radioOptions = array(
+				'type'  => 'radio',
+				'legend' => false,
+				'label' => 'Show all data',
+				'options' => array('approved'=>'Approved data only', 'all'=>'Show all data')
+			);
+
+			if ($showAll)
+			{
+				$radioOptions['default'] = 'all';
+				echo "<p>These data include data that have no yet been officially approved. These data shall not be published without official approval.</p><br>";
+			} else
+			{
+				$radioOptions['default'] = 'approved';
+			}
+
+			echo $this->Form->create('pages', array('action'=>'/'));
+			echo $this->Form->input('displayMode', $radioOptions);
+			echo $this->Form->submit('Refresh', array('url'=>'/'));
+			echo $this->Form->end();
+			
+		?>
+	</div>
+<?php
+
 	/* $default = array('type'=>'0','zoom'=>3,'lat'=>'1.683611', 'long'=>'39.717222' );
         $points = array();
         //$json =  file_get_contents('./points.json');

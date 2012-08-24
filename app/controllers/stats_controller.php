@@ -179,12 +179,8 @@ class StatsController extends AppController {
 
 		if (isset($this->data['displayModeSelector'])) {
 			$displayOption = $this->data['displayModeSelector']['displayMode'];
-		} else {
-			if (isset($this->data['Search'])) {
-				$displayOption = $this->data['Search']['displayMode'];
-			} else {
-				$displayOption = null;
-			}
+		} else if (isset($this->data['Search'])) {
+			$displayOption = $this->data['Search']['displayMode'];
 		}
 
 		// displayOption overrides the configuration options
@@ -282,12 +278,11 @@ class StatsController extends AppController {
 	}
 	
 	function aggregatedChart($strFilter = null) {
-		
-		
-		if (isset($this->data['displayModeSelector'])) {
-			$displayOption = $this->data['displayModeSelector']['displayMode'];
+				
+		if ($strFilter == "all") {
+			$displayOption = "all";
 		} else {
-			$displayOption = null;
+			$displayOption = "approved";
 		}
 
 		// displayOption overrides the configuration options
@@ -302,7 +297,7 @@ class StatsController extends AppController {
 		
 		$allLocations = $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
 		$this->set('allLocations', $allLocations);
-		$report = $this->aggregatedInventory($strFilter, $displayOption);
+		$report = $this->aggregatedInventory(null, $displayOption);
 		return $report;
 	}
 	

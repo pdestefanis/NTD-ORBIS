@@ -70,7 +70,7 @@
 				$raw = file_get_contents("/approvals/rest/$mId/$pId/ALL");
 				echo $raw;
 				exit;
-				
+				/*
 				$dbManip->approveAll($sum, $smsManip->getApprovalId());
 				$raw = "All quantities have been approved: ";
 				foreach (array_keys($sum) as $s) {
@@ -79,17 +79,19 @@
 				$dbManip->setSent($smsManip->getPhoneId(), $smsManip->getCurrDate(), $raw, $smsManip->getReceivedId() );
 				echo $raw;
 				exit;
+				*/
 			} else {
 				$item = $sms->getItem();
-				$raw = file_get_contents("/approvals/rest/$mId/$pId/$item";
+				$raw = file_get_contents("/approvals/rest/$mId/$pId/$item");
 				echo $raw;
 				exit;
-
+				/*
 				$dbManip->approveOne($smsManip->getItemId(), $sum, $smsManip->getApprovalId());
 				$raw = "The following quantities have been approved: ". $sms->getItem() . " quanitity: " . $sum[$smsManip->getItemId()]['sum'];
 				$dbManip->setSent ($smsManip->getPhoneId(), $smsManip->getCurrDate(), $raw, $smsManip->getReceivedId ());
 				echo $raw;
 				exit;
+				*/
 			}
 		} else if ($sms->getAction()  == 'register') {
 			//get the facility by code

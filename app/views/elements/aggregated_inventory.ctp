@@ -42,7 +42,7 @@
 				$class = ($i++ % 2 != 0) ? ' class=\'altrow\'' : ' class=\'norow\'';
 
 				$item_name  = isset($r['iname'])      ? $r['iname']      : $r['name'];
-				$level      = isset($r['level'])      ? $r['level']      : $r['depth'];
+				$level      = isset($r['level'])      ? $r['level']      : intval($r['depth'])-1;
 				$aggregated = isset($r['aggregated']) ? $r['aggregated'] : 0;
 				$aggregated = isset($r['aggregate_items'][$item_id]) ? $r['aggregate_items'][$item_id]['quantity'] : $aggregated;
 
@@ -87,7 +87,7 @@
 			'type'  => 'radio',
 			'legend' => false,
 			'label' => 'Show all data',
-			'options' => array('all'=>'Show all data', 'approved'=>'Approved data only')
+			'options' => array('approved'=>'Approved data only', 'all'=>'Show all data')
 		);
 		
 		if ($showAll) 

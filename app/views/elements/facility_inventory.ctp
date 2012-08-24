@@ -85,9 +85,9 @@ endforeach;
 			'type'  => 'radio',
 			'legend' => false,
 			'label' => 'Show all data',
-			'options' => array('all'=>'Show all data', 'approved'=>'Approved data only')
+			'options' => array('approved'=>'Approved data only', 'all'=>'Show all data')
 		);
-		
+
 		if ($showAll) 
 		{
 			$radioOptions['default'] = 'all';

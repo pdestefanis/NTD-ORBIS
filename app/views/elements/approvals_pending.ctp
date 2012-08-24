@@ -31,12 +31,12 @@ EOR;
 */
 		foreach ( $location as $item_key => $item )
 		{
-			$depth             = $item['depth'];
+			$depth             = intval($item['depth']-1);
 			$row_class         = ($i++ % 2) ? ' class="altrow"' : ' class="norow"';
 			$stat_ids          = implode( $item['total_items'][$item_key]['stat_ids'],",");
 			$parent            = isset($item['parent']) ? $item['parent'] : "";
 			$children_ids      = isset($item['children_ids']) ? implode( $item['children_ids'],",") : "";
-			$depth_marker      = str_repeat("-", $depth-1);
+			$depth_marker      = str_repeat("-", $depth);
 			$location_name     = $item['lname'];
 			$quantity          = $all[$location_key][$item_key]['quantity'];
 			$approved_quantity = isset($approved[$location_key][$item_key]) ? $approved[$location_key][$item_key]['quantity'] : "0";

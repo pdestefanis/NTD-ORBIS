@@ -45,7 +45,7 @@
 				'type'  => 'radio',
 				'legend' => false,
 				'label' => 'Show all data',
-				'options' => array('all'=>'Show all data', 'approved'=>'Approved data only')
+				'options' => array('approved'=>'Approved data only', 'all'=>'Show all data')
 			);
 		
 			if ($showAll) 
@@ -59,12 +59,18 @@
 			{
 				$radioOptions['default'] = 'approved';
 			}
-			/*
+			
 			echo $this->Form->create('displayModeSelector', array('id'=>'displayModeSelector'));
 			echo $this->Form->input('displayMode', $radioOptions);
-			echo $ajax->submit('Refresh', array('url'=> '', 'update' => 'aggregated_chart', 'loading' => '$(\'LoadingDiv\').show()', 'loaded' => '$(\'LoadingDiv\').hide()' )); 
+			echo <<<EOF
+<div class="submit">
+	<input type="submit" value="Refresh" onclick="var appSuffix=document.getElementById('DisplayModeSelectorDisplayModeAll').checked ?'/all':'';window.location.href='http://'+document.domain+'/stats/aggregatedChart'+appSuffix; event.returnValue = false; return false;">
+</div>
+
+EOF;
+			//echo $ajax->submit('Refresh', array('url'=> '', 'update' => 'aggregated_chart', 'loading' => '$(\'LoadingDiv\').show()', 'loaded' => '$(\'LoadingDiv\').hide()' )); 
 			echo $this->Form->end();
-			*/
+			
 		?>
 	</div>
 
