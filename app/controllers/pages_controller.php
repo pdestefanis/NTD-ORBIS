@@ -95,6 +95,17 @@ class PagesController extends AppController {
 		$this->render(implode('/', $path));
 	}
 	
+	function resetDatabase () {
+		$this->autoRender = false;
+		$sql = preg_replace('/--.*/', '', file_get_contents("test_data.sql") );
+		$config = new DATABASE_CONFIG();
+		$config = $config->default;
+		//pr($sql);
+		//pr(new DATABASE_CONFIG());
+		mysqli_multi_query(new mysqli($config['host'], $config['login'], $config['password'], $config['database']), $sql) or die("error."); 
+		echo "Database set to contents of test_data.sql \n\n";
+		pr($sql);
+	}	
 	//moved from stats contreoller so that file update is on the fly here
 	private function updateJSONFile() {
 		/* App::import('Controller', 'Stats');
@@ -133,6 +144,8 @@ class PagesController extends AppController {
 		}
 	}
 	
+	
+	
 	private function &getReports($locations) {
 		
 				App::import('Controller', 'Stats');
@@ -158,7 +171,7 @@ class PagesController extends AppController {
 				$last_stat_by_location = array();
 				foreach ($all_stats as $stat)
 				{
-					if ($showAll && empty($stat['Approval'])) continue;
+					if (!$showAll && empty($stat['Approval'])) continue;
 					if ( isset( $last_stat_by_location[$stat['Stat']['location_id']] ) )
 					{
 						if ($last_stat_by_location[$stat['Stat']['location_id']]['Stat']['created'] < $stat['Stat']['created'])
