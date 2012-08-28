@@ -6,7 +6,7 @@
 <?php 
 	echo $javascript->link('prototype', false); ?>
 <?php
-	echo $crumb->getHtml('Pending Approvals', null, '' ) ;
+	echo $crumb->getHtml('Pending Approvals', null, 'auto' ) ;
 	echo '<br /><br />' ;
 ?>
 

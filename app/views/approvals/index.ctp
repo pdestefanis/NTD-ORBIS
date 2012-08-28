@@ -5,7 +5,9 @@
 <?php 
 	echo $javascript->link('prototype', false); ?>
 <?php
+
 	echo $crumb->getHtml('Approvals', null, '' ) ;
+
 	echo '<br /><br />' ;
 ?>
 <div class="updates index" id="updates_index">
