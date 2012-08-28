@@ -144,6 +144,9 @@ class LocationsController extends AppController {
 		if ( $location_id === null ) return null;
 
 		$result = array();
+		
+		
+		
 
 		$children = $this->Location->find('list', array('callbacks' => 'false', 'conditions' => array( 'parent_id' => $location_id, 'deleted = 0')));
 
@@ -494,6 +497,25 @@ class LocationsController extends AppController {
 			}
 		}
 		return $result;
+	}
+	
+	function sortByItemByLocation($arrayByLI)
+	{
+
+		$arrayByIL = array();
+
+		foreach ( $arrayByLI as $locationKey => $items ) {
+			foreach( $items as $itemKey => $item ) {
+				if (!isset($arrayByIL[$itemKey])) {
+					$arrayByIL[$itemKey] = array($locationKey => $item);
+				} else {
+					$arrayByIL[$itemKey][$locationKey] = $item;
+				}
+			}
+		}
+
+		return $arrayByIL;
+
 	}
 }
 ?>

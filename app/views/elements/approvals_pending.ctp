@@ -1,9 +1,9 @@
 <h2><?php __('Pending Approvals');?></h2>
 	<table cellpadding="0" cellspacing="0" id='approval_list'>
 	<tr>
+			<th>Item</th>
 			<th>Facility</th>
 			<th>Level</th>
-			<th>Item</th>
 			<th>Approve</th>
 			<th>Reported Quantity</th>
 			<th>Approved Quantity</th>
@@ -17,7 +17,7 @@
 	$row_class = "";
 
 	$i=0;
-	foreach ( $pending as $location_key => $location )
+	foreach ( $pending as $item_key => $items )
 	{
 
 		/*if (count(array_shift($location['children'])) != 0)
@@ -30,7 +30,7 @@
 EOR;
 		}
 */
-		foreach ( $location as $item_key => $item )
+		foreach ( $items as $location_key => $item )
 		{
 			$depth             = intval($item['depth']-1);
 			$row_class         = ($i++ % 2) ? ' class="altrow"' : ' class="norow"';
@@ -39,17 +39,17 @@ EOR;
 			$children_ids      = isset($item['children_ids']) ? implode( $item['children_ids'],",") : "";
 			$depth_marker      = str_repeat("-", $depth);
 			$location_name     = $item['lname'];
-			$quantity          = $all[$location_key][$item_key]['quantity'];
-			$approved_quantity = isset($approved[$location_key][$item_key]) ? $approved[$location_key][$item_key]['quantity'] : "0";
+			$quantity          = $all[$item_key][$location_key]['quantity'];
+			$approved_quantity = isset($approved[$item_key][$location_key]) ? $approved[$item_key][$location_key]['quantity'] : "0";
 			$item_name         = $item['name'];
 			$last_updated      = $item['last_updated'];
-			$last_approval     = isset($approved[$location_key][$item_key]) ? $approved[$location_key][$item_key]['last_approval'] : "";
+			$last_approval     = isset($approved[$item_key][$location_key]) ? $approved[$item_key][$location_key]['last_approval'] : "";
 
 			echo <<<EOR
 			<tr $row_class>
-				<td>$depth_marker$location_name</td>
+				<td>$depth_marker$item_name</td>
+				<td>$location_name</td>
 				<td>$depth</td>
-				<td>$item_name</td>
 				<td><input name='unapproved_stat_ids' class='approval' value='$stat_ids' data-stat_ids='$stat_ids' data-item_id='$item_key' data-location='$location_key' data-parent='$parent' data-children='$children_ids' type='checkbox'></td>
 				<td>$quantity</td>
 				<td>$approved_quantity</td>

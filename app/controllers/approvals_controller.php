@@ -111,6 +111,7 @@ class ApprovalsController extends AppController {
 		$all = $location->setAggregates($all);
 		$all = $location->flattenTree($all);
 		$all = $location->arrayToHash($all);
+		$all = $location->sortByItemByLocation($all);
 		$this->set('all', $all);
 
 		$pending = $location->getChildTree( $location_id, array(
@@ -122,6 +123,7 @@ class ApprovalsController extends AppController {
 		$pending = $location->setAggregates($pending);
 		$pending = $location->flattenTree($pending);
 		$pending = $location->arrayToHash($pending);
+		$pending = $location->sortByItemByLocation($pending);
 		$this->set('pending', $pending);
 
 		$approved = $location->getChildTree( $location_id, array(
@@ -133,6 +135,7 @@ class ApprovalsController extends AppController {
 		$approved = $location->setAggregates($approved);
 		$approved = $location->flattenTree($approved);
 		$approved = $location->arrayToHash($approved);
+		$approved = $location->sortByItemByLocation($approved);
 		$this->set('approved', $approved);
 
 	}
