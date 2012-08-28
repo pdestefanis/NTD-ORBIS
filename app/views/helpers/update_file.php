@@ -21,7 +21,7 @@ class UpdateFileHelper extends Helper {
 		//prepare header
 		$fileData =  "";
 		$fileData .=  "<div class=infowindow><p><table><tr><td>Item</td>";
-		$fileData .=  "<th>Units Remaining</th>";
+		$fileData .=  "<th>Quantity Remaining</th>";
 		$fileData .=  "</tr>";
 		return $fileData;
 
