@@ -51,6 +51,6 @@
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link("Pending", array("controller" => "approvals", "action" => "pending")); ?></li>
+		<li><?php echo $this->Html->link("Pending Approvals", array("controller" => "approvals", "action" => "pending")); ?></li>
 	</ul>
 </div>
