@@ -1,7 +1,7 @@
 <h2><?php __('Approvals pending');?></h2>
 	<table cellpadding="0" cellspacing="0" id='approval_list'>
 	<tr>
-			<th colspan='2'>Facility</th>
+			<th>Facility</th>
 			<th>Level</th>
 			<th>Item</th>
 			<th>Current Total Quantity</th>
@@ -46,11 +46,13 @@ EOR;
 
 			echo <<<EOR
 			<tr $row_class>
-				<td><input name='unapproved_stat_ids' class='approval' value='$stat_ids' data-stat_ids='$stat_ids' data-item_id='$item_key' data-location='$location_key' data-parent='$parent' data-children='$children_ids' type='checkbox'></td>
 				<td>$depth_marker$location_name</td>
 				<td>$depth</td>
 				<td>$item_name</td>
-				<td>$quantity</td>
+				<td>
+					<input name='unapproved_stat_ids' class='approval' value='$stat_ids' data-stat_ids='$stat_ids' data-item_id='$item_key' data-location='$location_key' data-parent='$parent' data-children='$children_ids' type='checkbox'>
+					$quantity
+				</td>
 				<td>$approved_quantity</td>
 				<td>$last_updated</td>
 				<td>$last_approval</td>
