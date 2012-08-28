@@ -4,8 +4,9 @@
 			<th>Facility</th>
 			<th>Level</th>
 			<th>Item</th>
-			<th>Current Total Quantity</th>
-			<th>Approved Total Quantity</th>
+			<th>Approve</th>
+			<th>Reported Quantity</th>
+			<th>Approved Quantity</th>
 			<th>Last Updated</th>
 			<th>Last Approval</th>
 
@@ -49,10 +50,8 @@ EOR;
 				<td>$depth_marker$location_name</td>
 				<td>$depth</td>
 				<td>$item_name</td>
-				<td>
-					<input name='unapproved_stat_ids' class='approval' value='$stat_ids' data-stat_ids='$stat_ids' data-item_id='$item_key' data-location='$location_key' data-parent='$parent' data-children='$children_ids' type='checkbox'>
-					$quantity
-				</td>
+				<td><input name='unapproved_stat_ids' class='approval' value='$stat_ids' data-stat_ids='$stat_ids' data-item_id='$item_key' data-location='$location_key' data-parent='$parent' data-children='$children_ids' type='checkbox'></td>
+				<td>$quantity</td>
 				<td>$approved_quantity</td>
 				<td>$last_updated</td>
 				<td>$last_approval</td>
