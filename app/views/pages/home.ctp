@@ -87,7 +87,7 @@ endif;
 		echo "</li>";
 		
 		echo "<li>";
-		echo $access->checkHtml('Messagereceiveds/index', 'link', 'Raw messages ','/messagereceiveds/index' );		
+		echo $access->checkHtml('Messagereceiveds/index', 'link', 'Raw Messages ','/messagereceiveds/index' );		
 		echo "</li>";
 		
 
