@@ -1,4 +1,4 @@
-<h2><?php __('Approvals pending');?></h2>
+<h2><?php __('Pending Approvals');?></h2>
 	<table cellpadding="0" cellspacing="0" id='approval_list'>
 	<tr>
 			<th>Facility</th>
