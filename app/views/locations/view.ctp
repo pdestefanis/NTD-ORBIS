@@ -1,9 +1,9 @@
 <?php
-echo $crumb->getHtml('Viewing facility', null, 'auto' ) ;
+echo $crumb->getHtml('Facility Details', null, 'auto' ) ;
 echo '<br /><br />' ;
 ?> 
 <div class="locations view">
-<h2><?php  __('Facility');?></h2>
+<h2><?php  __('Facility Details');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
 		<!--
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Id'); ?></dt>

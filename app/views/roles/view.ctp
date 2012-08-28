@@ -1,9 +1,9 @@
 <?php
-	echo $crumb->getHtml('Viewing Role', null, 'auto') ;
+	echo $crumb->getHtml('Role Details', null, 'auto') ;
 	echo '<br /><br />';
 ?>
 <div class="roles view">
-<h2><?php  __('Role');?></h2>
+<h2><?php  __('Role Details');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
 		<!--<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Id'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>

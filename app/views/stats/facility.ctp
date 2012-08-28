@@ -1,7 +1,7 @@
 <div id="sitems">
 <?php echo $javascript->link('prototype', false); ?>
 <?php
-	echo $crumb->getHtml('Inventory by facility', null, '' ) ;
+	echo $crumb->getHtml('Inventory by Facility', null, '' ) ;
 	echo '<br /><br />' ;
 ?> 
 		

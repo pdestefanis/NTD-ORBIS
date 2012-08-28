@@ -1,12 +1,12 @@
 <div id="main">
 <?php echo $javascript->link('prototype', false); ?>
 <?php
-	echo $crumb->getHtml('Viewing Phone',  null, 'auto' ) ;
+	echo $crumb->getHtml('Phone Details',  null, 'auto' ) ;
 	echo '<br /><br />' ;
 ?>
 
 <div class="phones view">
-<h2><?php  __('Phone');?></h2>
+<h2><?php  __('Phone Details');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
 		<!--<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Id'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>

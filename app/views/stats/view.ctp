@@ -1,10 +1,10 @@
 <?php
-echo $crumb->getHtml('Viewing Statistic', null, 'auto' ) ;
+echo $crumb->getHtml('Update Details', null, 'auto' ) ;
 echo '<br /><br />' ;
 
 ?> 
 <div class="stats view">
-<h2><?php  __('Update');?></h2>
+<h2><?php  __('Update Details');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
 		
 		<dt<?php if ($i % 2 == 0) echo $class;?>>

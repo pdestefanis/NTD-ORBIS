@@ -1,11 +1,11 @@
 <div id="main">
 <?php echo $javascript->link('prototype', false); ?>
 <?php
-	echo $crumb->getHtml('View User', null, 'auto') ;
+	echo $crumb->getHtml('User Details', null, 'auto') ;
 	echo '<br /><br />';
 ?>
 <div class="users view">
-<h2><?php  __('User');?></h2>
+<h2><?php  __('User Details');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
 		<!--<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Id'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>

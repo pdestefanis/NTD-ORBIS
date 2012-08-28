@@ -1,5 +1,5 @@
 <?php
-echo $crumb->getHtml('Editing item', null, 'auto' ) ;
+echo $crumb->getHtml('Edit Item', null, 'auto' ) ;
 echo '<br /><br />' ;
 //echo $html->link('View Drug', 'view') ;
 ?> 

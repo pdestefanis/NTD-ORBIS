@@ -1,10 +1,10 @@
 <?php
-echo $crumb->getHtml('Viewing modifiers', null, 'auto' ) ;
+echo $crumb->getHtml('Modifier Details', null, 'auto' ) ;
 echo '<br /><br />' ;
 
 ?> 
 <div class="modifiers view">
-<h2><?php  __('Modifier');?></h2>
+<h2><?php  __('Modifier Details');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
 		<!--
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Id'); ?></dt>
