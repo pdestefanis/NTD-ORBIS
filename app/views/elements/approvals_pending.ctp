@@ -4,8 +4,8 @@
 			<th colspan='2'>Facility</th>
 			<th>Level</th>
 			<th>Item</th>
-			<th>Current Total Count</th>
-			<th>Approved Total Count</th>
+			<th>Current Total Quantity</th>
+			<th>Approved Total Quantity</th>
 			<th>Last Updated</th>
 			<th>Last Approval</th>
 

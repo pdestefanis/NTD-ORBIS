@@ -8,8 +8,8 @@
 			<th>".__('Level',1)."</th>
 			<th>".__('Approver',1)."</th>
 			<th>".__('Item',1)."</th>
-			<th>".__('Current Total Count',1)."</th>
-			<th>".__('Total Approved Count',1)."</th>
+			<th>".__('Current Total Quantity',1)."</th>
+			<th>".__('Total Approved Quantity',1)."</th>
 			<th>".__('Last Update',1)."</th>
 			<th>".__('Last Approval',1)."</th>
 		";	?>

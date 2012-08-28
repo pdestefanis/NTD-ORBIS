@@ -8,7 +8,7 @@
 		$reportHtml = "<table class=\"small\">";
 		$reportHtml .= "<tr>";
 		$reportHtml .= "<th>Item</th>";
-		$reportHtml .= "<th>Total</th>";
+		$reportHtml .= "<th>Total Quantity</th>";
 		$reportHtml .= "</tr>";
 		foreach ($report[$loc] as $r) {
 				if (isset($report[$r['parent']]))
