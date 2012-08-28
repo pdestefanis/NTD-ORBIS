@@ -14,6 +14,68 @@
 
 	<?php 
 
+
+
+/* 
+ * Generate Branch Symbols
+ */
+$branches = array();
+
+$flat = array();
+foreach ($pending as $item_key => $items)
+	foreach ($items as $location_key => $item)
+		array_push($flat, $item);
+
+$sym_pipe = '<img class="tree_symbols" src="/img/sym_pipe.png">';
+$sym_leaf = '<img class="tree_symbols" src="/img/sym_leaf.png">';
+$sym_cont = '<img class="tree_symbols" src="/img/sym_cont.png">';
+
+$continuing = 0;
+
+for ($i=0; $i<count($flat); $i++) {
+	$idepth = intval($flat[$i]['depth']);
+	if ($idepth != 1)
+	{
+		for ($j=$i+1; $j<count($flat); $j++)
+		{
+			$jdepth = intval($flat[$j]['depth']);
+			if ($jdepth <  $idepth) break;
+			if ($jdepth == $idepth) $continuing++;
+		}
+		for ($j=$i-1; $j>0; $j--)
+		{
+			$jdepth = intval($flat[$j]['depth']);
+			if ($jdepth <  $idepth) break;
+			if ($jdepth == $idepth) $continuing--;
+		}
+	} else
+	{
+		$continuing = 0;
+	}
+	$continuingAdjusted = $continuing;
+	if ( $i == count($flat) ) {
+		$leaf = $sym_leaf;
+	} else if ($idepth == 1)
+	{
+		$leaf = "";
+	} else if (isset($flat[$i+1]) && $flat[$i]['depth'] > $flat[$i+1]['depth'] )
+	{
+		$leaf = $sym_leaf;
+	} else if (!isset($flat[$i+1])) {
+		$leaf = $sym_leaf;
+	} else {
+		$continuingAdjusted--;
+		$leaf = $sym_cont;
+	}
+	
+	$branches[$i] = str_repeat($sym_pipe, max($continuingAdjusted, 0)) . $leaf;
+
+}
+
+
+
+
+
 	$row_class = "";
 
 	$i=0;
@@ -32,6 +94,7 @@ EOR;
 */
 		foreach ( $items as $location_key => $item )
 		{
+			$branchSymbols     = $branches[$i];
 			$depth             = intval($item['depth']-1);
 			$row_class         = ($i++ % 2) ? ' class="altrow"' : ' class="norow"';
 			$stat_ids          = implode( $item['total_items'][$item_key]['stat_ids'],",");
@@ -47,7 +110,7 @@ EOR;
 
 			echo <<<EOR
 			<tr $row_class>
-				<td>$depth_marker$item_name</td>
+				<td>$branchSymbols$item_name</td>
 				<td>$location_name</td>
 				<td>$depth</td>
 				<td><input name='unapproved_stat_ids' class='approval' value='$stat_ids' data-stat_ids='$stat_ids' data-item_id='$item_key' data-location='$location_key' data-parent='$parent' data-children='$children_ids' type='checkbox'></td>

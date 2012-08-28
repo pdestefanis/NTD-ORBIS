@@ -697,3 +697,12 @@ div .secondary-menu {
 	text-decoration: none;
 	font-weight: normal;
 }
+
+
+
+img.tree_symbols
+{
+  vertical-align:middle;
+  opacity: 0.5;
+  margin: -6px 5px -6px -5px;
+}
