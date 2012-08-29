@@ -40,7 +40,7 @@
 
 
 	<div class="select_display_mode index">
-		<?php
+		<?php /*
 			$radioOptions = array(
 				'type'  => 'radio',
 				'legend' => false,
@@ -50,8 +50,6 @@
 		
 			if ($showAll) 
 			{
-				$radioOptions['default'] = 'all';
-				
 				echo "<p>These data include data that have no yet been officially approved. These data shall not be published without official approval. You can change this setting in ";
 				$access->checkHtml('Stats/options', 'link', 'Options ','/stats/options' );
 				echo ".</p><br>";
@@ -64,14 +62,42 @@
 			echo $this->Form->input('displayMode', $radioOptions);
 			echo <<<EOF
 <div class="submit">
-	<input type="submit" value="Refresh" onclick="var appSuffix=document.getElementById('DisplayModeSelectorDisplayModeAll').checked ?'/all':'';window.location.href='http://'+document.domain+'/stats/aggregatedChart'+appSuffix; event.returnValue = false; return false;">
+	<input type="submit" value="Refresh" onclick="var appSuffix=document.getElementById('DisplayModeSelectorDisplayModeAll').checked?'/all':'';window.location.href='http://'+document.domain+'/stats/aggregatedChart'+appSuffix; event.returnValue = false; return false;">
 </div>
 
 EOF;
 			//echo $ajax->submit('Refresh', array('url'=> '', 'update' => 'aggregated_chart', 'loading' => '$(\'LoadingDiv\').show()', 'loaded' => '$(\'LoadingDiv\').hide()' )); 
 			echo $this->Form->end();
 			
+		*/ ?>
+		
+		<?php
+		
+			if ($showAll) 
+			{
+				echo "<p>These data include data that have no yet been officially approved. These data shall not be published without official approval. You can change this setting in ";
+				$access->checkHtml('Stats/options', 'link', 'Options ','/stats/options' );
+				echo ".</p><br>";
+			}
+		
 		?>
+
+		<form accept-charset="utf-8" method="post" id="displayModeSelector" action="/display_mode_selectors/aggregatedChart">
+		  <div style="display:none;">
+		    <input type="hidden" value="POST" name="_method">
+		  </div>
+		  <div class="input radio">
+		    <input type="radio" <?php echo (!$showAll ? 'checked="checked"' : ''); ?> value="approved" id="DisplayModeSelectorDisplayModeApproved" name="data[displayModeSelector][displayMode]">
+		    <label for="DisplayModeSelectorDisplayModeApproved">Approved data only</label>
+    
+		    <input type="radio" <?php echo ($showAll ? 'checked="checked"' : ''); ?>value="all" id="DisplayModeSelectorDisplayModeAll" name="data[displayModeSelector][displayMode]">
+		    <label for="DisplayModeSelectorDisplayModeAll">Show all data</label>
+		  </div>
+		  <div class="submit">
+		    <input type="submit" onclick="var appSuffix=document.getElementById('DisplayModeSelectorDisplayModeAll').checked ?'/all':'';window.location.href='http://'+document.domain+'/stats/aggregatedChart'+appSuffix; event.returnValue = false; return false;" value="Refresh">
+		  </div>
+		</form>
+
 	</div>
 
 
