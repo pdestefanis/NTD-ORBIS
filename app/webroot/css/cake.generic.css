@@ -706,3 +706,8 @@ img.tree_symbols
   opacity: 0.5;
   margin: -6px 5px -6px -5px;
 }
+
+td.pending_approval_branch
+{
+  white-space: nowrap;
+}

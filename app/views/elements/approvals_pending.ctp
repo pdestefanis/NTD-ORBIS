@@ -110,7 +110,7 @@ EOR;
 
 			echo <<<EOR
 			<tr $row_class>
-				<td>$branchSymbols$item_name</td>
+				<td class='pending_approva_branch'>$branchSymbols$item_name</td>
 				<td>$location_name</td>
 				<td>$depth</td>
 				<td><input name='unapproved_stat_ids' class='approval' value='$stat_ids' data-stat_ids='$stat_ids' data-item_id='$item_key' data-location='$location_key' data-parent='$parent' data-children='$children_ids' type='checkbox'></td>
