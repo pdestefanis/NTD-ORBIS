@@ -38,8 +38,8 @@
 			<td><?php echo $depth; ?></td>
 			<td><?php echo $approver; ?></td>
 			<td><?php echo $item_name; ?></td>
-			<td><?php echo $total_quantity; ?></td>
-			<td><?php echo $approved_quantity; ?></td>
+			<td class='number'><?php echo $total_quantity; ?></td>
+			<td class='number'><?php echo $approved_quantity; ?></td>
 			<td><?php echo $last_updated; ?></td>
 			<td><?php echo $last_approval; ?></td>
 

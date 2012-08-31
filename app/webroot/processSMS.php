@@ -64,6 +64,11 @@
 			$pId = $smsManip->getPhoneId();
 			$mId = $smsManip->getReceivedId();
 
+			die ("You were debugging");
+			$raw = file_get_contents("/approvals/rest/$pId");
+			echo $raw;
+			exit;
+
 			//two cases an item and all
 			if (strtoupper($sms->getItem() ) == "ALL") {
 

@@ -5,8 +5,9 @@
 			<th>Facility</th>
 			<th>Level</th>
 			<th>Approve</th>
-			<th>Reported Quantity</th>
-			<th>Approved Quantity</th>
+			<th>Change</th>
+			<th>Approved<br>Quantity</th>
+			<th>Reported<br>Total</th>
 			<th>Last Updated</th>
 			<th>Last Approval</th>
 
@@ -107,21 +108,21 @@ EOR;
 			$item_name         = $item['name'];
 			$last_updated      = $item['last_updated'];
 			$last_approval     = isset($approved[$item_key][$location_key]) ? $approved[$item_key][$location_key]['last_approval'] : "";
+			$change            = ($approved_quantity - $quantity) * -1;
 
 			echo <<<EOR
 			<tr $row_class>
-				<td class='pending_approva_branch'>$branchSymbols$item_name</td>
-				<td>$location_name</td>
+				<td>$item_name</td>
+				<td class='pending_approva_branch'>$branchSymbols$location_name</td>
 				<td>$depth</td>
 				<td><input name='unapproved_stat_ids' class='approval' value='$stat_ids' data-stat_ids='$stat_ids' data-item_id='$item_key' data-location='$location_key' data-parent='$parent' data-children='$children_ids' type='checkbox'></td>
-				<td>$quantity</td>
-				<td>$approved_quantity</td>
+				<td class='number'>$change</td>
+				<td class='number'>$approved_quantity</td>
+				<td class='number'>$quantity</td>
 				<td>$last_updated</td>
 				<td>$last_approval</td>
 			</tr>
 EOR;
-
-			
 
 		}
 	}

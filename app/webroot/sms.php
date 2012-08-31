@@ -26,6 +26,8 @@ class sms {
 	private $action;
 	
 	function __construct($args) {
+		
+		print_r($args);
 		// Forms are also being processed under the <None> keyword rules
 		// This is a hack to skip the message processing if a form is received
 		// I would like for this to report nothing back, but FLSMS will still report.
@@ -45,6 +47,7 @@ class sms {
 			$action = "item";
 		else
 			$action = substr($args[1], 0, strpos($args[1], ' '));
+		
 		
 		//action case
 		if ($this->checkAction($action) ) { //action gets set in checkAction
