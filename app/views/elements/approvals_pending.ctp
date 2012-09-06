@@ -109,6 +109,7 @@ EOR;
 			$last_updated      = $item['last_updated'];
 			$last_approval     = isset($approved[$item_key][$location_key]) ? $approved[$item_key][$location_key]['last_approval'] : "";
 			$change            = ($approved_quantity - $quantity) * -1;
+			$signum            = ($change == 0) ? "" : ($change > 0) ? "+" : "-";
 
 			echo <<<EOR
 			<tr $row_class>
@@ -116,7 +117,7 @@ EOR;
 				<td class='pending_approva_branch'>$branchSymbols$location_name</td>
 				<td>$depth</td>
 				<td><input name='unapproved_stat_ids' class='approval' value='$stat_ids' data-stat_ids='$stat_ids' data-item_id='$item_key' data-location='$location_key' data-parent='$parent' data-children='$children_ids' type='checkbox'></td>
-				<td class='number'>$change</td>
+				<td class='number'>$signum$change</td>
 				<td class='number'>$approved_quantity</td>
 				<td class='number'>$quantity</td>
 				<td>$last_updated</td>
