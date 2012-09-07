@@ -140,7 +140,7 @@ class ApprovalsController extends AppController {
 
 	}
 
-	function restPending ($pId = 0)
+	function restPending ($pId = 0, $itemQuery = "ALL")
 	{
 		$this->autoRender = false;
 
@@ -206,7 +206,9 @@ class ApprovalsController extends AppController {
 			$quantity = $item['total_items'][$key]['quantity'];
 			$code = $item['total_items'][$key]['icode'];
 
-			array_push($items, "$name($code): $quantity");
+			if ($item['total_items'][$key]['icode'] == $itemQuery || $itemQuery == "ALL") {
+				array_push($items, "$name($code): $quantity");
+			}
 		}
 
 		echo implode("\n", $items);

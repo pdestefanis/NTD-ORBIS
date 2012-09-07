@@ -48,8 +48,26 @@ class AppController extends Controller {
 
 		$this->AuthExt->loginError = "Username and password did not match";
 		$this->AuthExt->authError = "You are not allowed to perform this action";
-		
-		Configure::write('authLocations',$this->Session->read("userLocations"));
+
+		if (strstr($this->params['url']['url'], "approvals/rest"))
+		{
+			App::import('Controller', 'Users');
+			$users = new UsersController;
+			$users->constructClasses();
+			$pId =$this->params['pId'];
+			$user = $users->User->find("list", array(
+				"conditions" => array("phone_id" => $pId), 
+				"recursive"  => -1, 
+				"fields"     => array("User.reach")
+			));
+
+			$user = $users->User->find('first', array('conditions' => array('User.phone_id' => $pId)));
+			$users->setUserLocation($user);
+			Configure::write('authLocations', $this->Session->read("userLocations"));
+		} else
+		{
+			Configure::write('authLocations', $this->Session->read("userLocations"));
+		}
 		//$this->buildMenus();
 		
 	

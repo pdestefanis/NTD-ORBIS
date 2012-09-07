@@ -9,6 +9,7 @@ class modifier {
 class action{
 	public $query =  array ('QUERY', 'Q', 'ITEM');
 	public $approve = array ('APPROVE', 'A', 'OK');
+	public $pending = array ('PENDING', 'PEND');
 	public $count = array ('COUNT', 'C');
 	public $xcount = array ('XCOUNT', 'XC');
 	//NB please read note below
@@ -27,7 +28,6 @@ class sms {
 	
 	function __construct($args) {
 		
-		print_r($args);
 		// Forms are also being processed under the <None> keyword rules
 		// This is a hack to skip the message processing if a form is received
 		// I would like for this to report nothing back, but FLSMS will still report.
@@ -110,6 +110,7 @@ class sms {
 	}
 	
 	function checkAction($a) {
+
 		$act = new action;
 		$r = new ReflectionObject($act);
 		$props = $r->getProperties();

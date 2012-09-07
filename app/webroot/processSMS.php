@@ -53,7 +53,8 @@
 			exit;
 		} else if ($sms->getAction() == 'pending') {
 			$pId = $smsManip->getPhoneId();
-			$raw = file_get_contents("/approvals/rest/$pId");
+			$item = strtoupper($sms->getItem() );
+			$raw = file_get_contents("http://localhost/approvals/rest/$pId/$item");
 			echo $raw;
 			exit;
 		} else if ($sms->getAction() == 'approve') {

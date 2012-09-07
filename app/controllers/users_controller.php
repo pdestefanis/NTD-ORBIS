@@ -32,36 +32,41 @@ class UsersController extends AppController {
 			$u = $this->AuthExt->user();
 			$g[] = $u['User']['role_id'];
 			if (isset($u['User']['Role']))
-			foreach ($u['User']['Role'] as $role) 
-				$g[] = $role;
-			$parents = NULL;
+				foreach ($u['User']['Role'] as $role) 
+					$g[] = $role;
 			
-			$this->findLocationParent($u['User']['location_id'], $parents, $u['User']['reach'] );
+			$this->setUserLocations($u);
 			
-			$children = $parents; //make sure all parents are included
-			foreach ($parents as $p) 
-				$this->findLocationChildren($p, $children);
-			$children = array_unique($children);
-			$locs[] = $u['User']['location_id']; //add current location
-			
-			if ($u['User']['role_id'] == 1)// (in_array(1,$g)) only primay admins have all locations
-				$locs = array_keys($this->User->Location->find('list', array('callbacks' => 'false')));
-			else
-				$locs = array_values($children);
-			
-			//$locs = array_keys($locs);
-			
-			$this->Session->write("userLocations", $locs);
-		
 			$this->Session->setFlash( ucwords($u['User']['name']) . ', you are logged in!' , 'flash_success');
 			$this->redirect($this->AuthExt->redirect());
 			//$this->redirect('/', null, true);
 		} 
 	 }
 
-	 
+	function setUserLocation($u)
+	{
+		
+		$parents = NULL;
+		
+		$this->findLocationParent($u['User']['location_id'], $parents, $u['User']['reach'] );
+		
+		$children = $parents; //make sure all parents are included
+		foreach ($parents as $p) 
+			$this->findLocationChildren($p, $children);
+		$children = array_unique($children);
+		$locs[] = $u['User']['location_id']; //add current location
+		
+		if ($u['User']['role_id'] == 1)// (in_array(1,$g)) only primay admins have all locations
+			$locs = array_keys($this->User->Location->find('list', array('callbacks' => 'false')));
+		else
+			$locs = array_values($children);
+		
+		//$locs = array_keys($locs);
+		
+		$this->Session->write("userLocations", $locs);
+	}
 
-   function logout() {
+	function logout() {
 		
 		$this->Session->destroy();
 		$this->Session->delete('currUser'); 
@@ -70,7 +75,7 @@ class UsersController extends AppController {
 		$this->AuthExt->logout();
 		$this->redirect($this->AuthExt->redirect());
 
-   }
+	}
 
    
 

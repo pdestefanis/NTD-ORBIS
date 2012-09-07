@@ -173,7 +173,8 @@ class User extends AppModel {
 			{
 				//if ($sess->read("Auth.User.group_id") != 8){ // check if admin user
 					if (!isset($queryData['conditions']['User.id']) && !isset($queryData['conditions']['User.username'])) { //check if viewing item
-						$queryData['conditions'][] = array ('User.location_id IN (' . implode(",", Configure::read('authLocations')). ')');
+						if (Configure::read('authLocations'))
+							$queryData['conditions'][] = array ('User.location_id IN (' . implode(",", Configure::read('authLocations')). ')');
 						
 						//$queryData['conditions'][] = array ('Phone.id != -1');
 					}
