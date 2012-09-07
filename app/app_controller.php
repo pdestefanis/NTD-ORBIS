@@ -62,7 +62,7 @@ class AppController extends Controller {
 			));
 
 			$user = $users->User->find('first', array('conditions' => array('User.phone_id' => $pId)));
-			$users->setUserLocation($user);
+			$users->setUserLocations($user);
 			Configure::write('authLocations', $this->Session->read("userLocations"));
 		} else
 		{

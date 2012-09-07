@@ -25,6 +25,8 @@ class sms {
 	private $phone;
 	private $modifier;
 	private $action;
+	private $location;
+	private $itemList;
 	
 	function __construct($args) {
 		
@@ -52,9 +54,17 @@ class sms {
 		//action case
 		if ($this->checkAction($action) ) { //action gets set in checkAction
 			if (strpos($args[1], ' ') === FALSE) {
-					$this->item = $args[1];
-			} else
+				$this->item = $args[1];
+			} else {
 				$this->item = substr($args[1], strpos($args[1], ' ')+1, strlen($args[1]));
+			}
+			
+			if ($this->action == "approve")
+			{
+				$approvalArgs = explode(" ", $args[1]);
+				$this->location = $approvalArgs[1];
+				$this->itemList = array_slice($approvalArgs, 2);
+			}
 		} else { //update case	
 			$this->item = substr($args[1], 0, strpos($args[1], ' '));
 			$this->modifier = substr($args[1], strpos($args[1], ' ')+1, 1);
@@ -72,28 +82,24 @@ class sms {
 		
 	}    
 	
-	function getPhone () {
-		return $this->phone;
-	}
 	
-	function getItem () {
-		return $this->item;
-	}
+	/*
+	 * Accessors
+	 */
+	function getPhone ()    { return $this->phone; }
+	function getItem ()     { return $this->item; }
+	function getItemList () { return $this->itemList; }
+	function getLocation () { return $this->location; }
+	function getQty ()      { return $this->qty; }
+	function getModifier () { return $this->modifier; }
+	function getAction ()   { return $this->action; }
+
+	// Mutator
+	function setModifier ($mod) { $this->modifier = $mod; }
 	
-	function getQty () {
-		return $this->qty;
-	}
-	
-	function getModifier () {
-		return $this->modifier;
-	}
-	
-	function getAction () {
-		return $this->action;
-	}
-	
-	function setModifier ($mod) {
-		$this->modifier = $mod;
+	function locationIsItem () {
+		array_push($this->itemList, $this->location);
+		$this->location = null;
 	}
 	
 	function check() { //check all fields are set except modifier

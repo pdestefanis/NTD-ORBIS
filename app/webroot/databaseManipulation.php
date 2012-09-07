@@ -63,7 +63,7 @@ class databaseManipulation {
 	}	
 	
 	function getLocationIdByShortn($shortname) {
-		$query = "SELECT id as  lid from locations where shortname ='" . $shortname . "' limit 1";
+		$query = "SELECT id as lid from locations where shortname='" . $shortname . "' limit 1";
 		$result = $this->db->query($query);
 
 		while ($row = $result->fetch_assoc()) {

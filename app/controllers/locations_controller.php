@@ -429,6 +429,7 @@ class LocationsController extends AppController {
 
 				$result[$element['lid']][$item_key] = $item_value;
 				$result[$element['lid']][$item_key]['lname'] = $element['lname'];
+				$result[$element['lid']][$item_key]['lid']   = $element['lid'];
 				$result[$element['lid']][$item_key]['depth'] = $element['depth'];
 
 				if ($element['aggregate_items'])

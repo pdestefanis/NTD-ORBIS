@@ -48,7 +48,7 @@ class smsManipulation {
 		}
 		
 		// check that there are arguments
-		if (sizeof($this->args) == 1 || sizeof($this->args) == 2 || sizeof($this->args) > 3 || (count(explode(" ",$this->args[1])) > 2) && substr(strtoupper($this->args[1]), 0, 3) != "MDA") { //if empty message or more than necessary arguements
+		if (sizeof($this->args) == 1 || sizeof($this->args) == 2 || sizeof($this->args) > 3 /*|| (count(explode(" ",$this->args[1])) > 2)*/ && substr(strtoupper($this->args[1]), 0, 3) != "MDA") { //if empty message or more than necessary arguements
 			$raw = "Incorrect arguments set. Please use Item-Code, a space, modfier (+,-,=), a space, and the quantity to report. Please send one report per SMS.";
 			$this->dbManip->setSent($this->phoneId, $this->currDate, $raw . " " .end($this->args), $this->getReceivedId ());
 			echo $raw;
@@ -78,17 +78,57 @@ class smsManipulation {
 			exit;
 		}
 		
-		$this->itemId = $this->dbManip->getItemId($this->sms->getItem());
-		if ($this->itemId == -1 && strtoupper($this->sms->getItem()) != "ALL"  && substr(strtoupper($this->args[1]), 0, 3) != "MDA") { //EDIT MDA HERE
-			$raw =  "Cannot find an item with code '" . $this->sms->getItem() . "'. Items are identified by their code. Please verify and resend\n";
-			$this->dbManip->setSent($this->phoneId, $this->currDate, $raw, $this->getReceivedId ());
-			echo $raw;
-			exit;
+		if ($this->sms->getAction() != "approve")
+		{
+			$this->itemId = $this->dbManip->getItemId($this->sms->getItem());
+			if ($this->itemId == -1 && strtoupper($this->sms->getItem()) != "ALL"  && substr(strtoupper($this->args[1]), 0, 3) != "MDA") { //EDIT MDA HERE
+				$raw =  "Cannot find an item with code '" . $this->sms->getItem() . "'. Items are identified by their code. Please verify and resend\n";
+				$this->dbManip->setSent($this->phoneId, $this->currDate, $raw, $this->getReceivedId ());
+				echo $raw;
+				exit;
+			}
+
+			$this->qtyAfter = $this->dbManip->getQuantityAfter($this->itemId, $this->locationId);
+			if ($this->qtyAfter == -1) 
+				$this->qtyAfter = 0; //no quantity first submission set it to zero
+		} else
+		{ // action = "approve"
+
+
+			// see if it picked up an item as a location
+			if ($this->dbManip->getItemId($this->sms->getLocation()) != -1)
+			{
+				$this->sms->locationIsItem();
+			}
+
+			// Check item list for correct item codes
+			$itemList = $this->sms->getItemList();
+
+			// If no items sent send error message
+			if (count($itemList) == 0) {
+				$raw = "No items sent. Usage: 'OK [facility] [item...item]'";
+				$this->dbManip->setSent($this->phoneId, $this->currDate, $raw, $this->getReceivedId());
+				echo $raw;
+				exit;
+			}
+			$missingItems = array();
+			foreach ($itemList as $oneItem) 
+			{
+				$oneItemId = $this->dbManip->getItemId($oneItem);
+				if ($oneItemId == -1 && $oneItem != "ALL") 
+				{ 
+					array_push($missingItems, $oneItem);
+				}
+			}
+			if (count($missingItems) > 0)
+			{
+				$itemPlural = (count($missingItems) == 1) ? "Item" : "Items";
+				$raw = "$itemPlural not found: " . implode(", ", $missingItems) . ". Items are identified by their code. Please verify and resend.";
+				$this->dbManip->setSent($this->phoneId, $this->currDate, $raw, $this->getReceivedId());
+				echo $raw;
+				exit;
+			}
 		}
-		
-		$this->qtyAfter = $this->dbManip->getQuantityAfter($this->itemId, $this->locationId);
-		if ($this->qtyAfter == -1) 
-			$this->qtyAfter = 0; //no quantity first submission set it to zero
 	}
 	
 	function getChildren (){
@@ -273,13 +313,14 @@ class smsManipulation {
 	}
 	
 	function getLocationIdByShortn($shortname) {
-		$this->locationId = $this->dbManip->getLocationIdByShortn ($shortname );
+		$this->locationId = $this->dbManip->getLocationIdByShortn( $shortname );
 		if ($this->locationId == -1) {
 			$raw = "That is not a valid ID for a Kebele ($shortname). Please check the list, or ask a supervisor\n\n";
 			$this->dbManip->setSent($this->getPhoneId(), $this->currDate, $raw, $this->getReceivedId ());
 			echo $raw;
 			exit;
 		}
+		return $this->locationId;
 	}
 	
 	function getLocationNameById($shortname) {

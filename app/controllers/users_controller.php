@@ -43,7 +43,7 @@ class UsersController extends AppController {
 		} 
 	 }
 
-	function setUserLocation($u)
+	function setUserLocations($u)
 	{
 		
 		$parents = NULL;

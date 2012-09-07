@@ -12,7 +12,7 @@ class ApprovalsController extends AppController {
 	function beforeFilter()
 	{
 		parent::beforeFilter();
-		$this->AuthExt->allow(array('restPending', 'restApproval')); 
+		$this->AuthExt->allow(array('restPending', 'restApprove')); 
 	}
 	
 	function index($strFilter = null) 
@@ -214,15 +214,20 @@ class ApprovalsController extends AppController {
 		echo implode("\n", $items);
 	}
 	
-	function restApprove($mId=null, $pId=null, $iCode=null)
+	function restApprove($mId=null, $pId=null, $locationFilter=null, $itemList=null)
 	{
 		$this->autoRender = false;
 		if ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) return;
 
-		echo "m:$mId, pid:$pId, iCode:$iCode";
+
+
 		App::import('Controller', 'Phones');
 		App::import('Controller', 'Users');
 		App::import('Controller', 'Locations');
+
+		$itemList = unserialize($itemList);
+
+		$approveAllItems = in_array("ALL", $itemList);
 
 		$phones = new PhonesController;
 		$phones->constructClasses();
@@ -236,18 +241,14 @@ class ApprovalsController extends AppController {
 		$users = new UsersController;
 		$users->constructClasses();
 
-		$user = $users->User->find("list", array(
-			"conditions" => array("phone_id" => $pId), 
-			"recursive"  => -1, 
-			"fields"     => array("User.reach")
-		));
-			
+		$user = $users->User->findByPhoneId($pId);
+
 		if ( empty($user) )
 		{
 			echo "Phone not authorized.";
 			return;
 		} else {
-			$user_reach = array_shift(array_values($user));
+			$user_reach = $user['User']['reach'];
 			if ($user_reach != 0)
 			{
 				for ( $i = 0; $i < $user_reach; $i++)
@@ -262,6 +263,8 @@ class ApprovalsController extends AppController {
 		$location = new LocationsController;
 		$location->constructClasses();
 
+		if ($locationFilter != 'null') $location_id = $locationFilter;
+
 		$pending = $location->getChildTree( $location_id, array(
 			'depth' => 1,
 			'parent' => null,
@@ -275,29 +278,45 @@ class ApprovalsController extends AppController {
 
 		$quit = false;
 		$all_stats_ids = array();
-		echo "Approvals\n ";
+
+		if (count($pending) == 0)
+		{
+			echo "Nothing to approve at this location";
+			return;
+		}
+		
 		$location = $pending[$location_id];
+		echo "Approvals\n ";
+
+
 		foreach ($location as $key => $item)
 		{
-			if ($item['total_items'][$key]['icode'] == $iCode || $iCode == "ALL")
-			{
 
+			if (in_array($item['total_items'][$key]['icode'], $itemList) || $approveAllItems)
+			{
+				
 				$name = $item['total_items'][$key]['name'];
 				$quantity = $item['total_items'][$key]['quantity'];
-				$all_stats_ids = array_merge($all_stats_ids, $item['local_items'][$key]['stat_ids']);
-				$all_stats_ids = array_merge($all_stats_ids, $item['aggregate_items'][$key]['stat_ids']);
+				if (isset($item['local_items'][$key]['stat_ids']) && count($item['local_items'][$key]['stat_ids']) > 0) {
+					$all_stats_ids = array_merge($all_stats_ids, $item['local_items'][$key]['stat_ids']);
+				}
+				if (isset($item['aggregate_items'][$key]['stat_ids']) && count($item['aggregate_items'][$key]['stat_ids']) > 0) {
+					$all_stats_ids = array_merge($all_stats_ids, $item['aggregate_items'][$key]['stat_ids']);
+				}
 				echo "$name: $quantity";
 			}
 		}
-		
+
 		$saveData = array(
 			"Approval" => array( "user_id" => $user['User']['id'] ),
 			"Stat"     => array( "Stat" => $all_stats_ids )
 		);
+		
+
 
 		$this->Approval->create();
 		if ($this->Approval->save($saveData)) {
-			echo "Approvals saved.";
+			echo "\nApprovals saved.";
 		} else {
 			echo "Approvals not saved. Please try again.";
 		}
