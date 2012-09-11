@@ -167,21 +167,12 @@ INSERT INTO `acos` VALUES(3385, 3217, NULL, NULL, 'resetDatabase', 455, 456);
 TRUNCATE TABLE `approvals`;
 
 -- Dump approvals
-INSERT INTO `approvals` VALUES(38, NULL, 1, '2012-07-22 21:20:27');
-INSERT INTO `approvals` VALUES(39, NULL, 1, '2012-07-22 21:37:03');
-INSERT INTO `approvals` VALUES(40, NULL, 1, '2012-07-23 09:54:04');
-INSERT INTO `approvals` VALUES(41, NULL, 1, '2012-08-20 10:13:52');
 
 -- wipe approvals_stats
 TRUNCATE TABLE `approvals_stats`;
 
 -- insert approvals_stats
-INSERT INTO `approvals_stats` VALUES(1, 38, 5);
-INSERT INTO `approvals_stats` VALUES(2, 39, 2);
-INSERT INTO `approvals_stats` VALUES(3, 39, 1);
-INSERT INTO `approvals_stats` VALUES(4, 40, 6);
-INSERT INTO `approvals_stats` VALUES(5, 41, 12);
-INSERT INTO `approvals_stats` VALUES(6, 41, 11);
+
 
 -- wipe aros
 TRUNCATE TABLE `aros`;
@@ -711,4 +702,14 @@ INSERT INTO `users` VALUES(1, 'Administrator', 'admin', 'f8b41181b25c2f23b749e2b
 INSERT INTO `users` VALUES(3, 'son_user', 'son_user', 'f8b41181b25c2f23b749e2bc01bf7179c29810a3', 3, '2010-08-29 23:11:57', '2012-07-22 21:34:02', 36, 0, NULL, 1);
 INSERT INTO `users` VALUES(9, 'mod', 'mod', 'f8b41181b25c2f23b749e2bc01bf7179c29810a3', 1, '2012-01-05 16:29:06', '2012-08-07 08:51:34', 37, 1, NULL, 1);
 INSERT INTO `users` VALUES(10, 'sybling_user', 'sybling_user', 'f8b41181b25c2f23b749e2bc01bf7179c29810a3', 2, '2012-07-19 18:03:59', '2012-07-22 21:33:43', 37, 0, NULL, 1);
+
+
+-- wipe messages reieveds
+TRUNCATE TABLE `messagesreceiveds`;
+
+
+-- wipe messages reieveds
+TRUNCATE TABLE `messagessents`;
+
+
 
