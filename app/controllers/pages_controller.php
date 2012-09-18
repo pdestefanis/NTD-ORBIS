@@ -97,9 +97,12 @@ class PagesController extends AppController {
 	
 	function resetDatabase () {
 		$this->autoRender = false;
-		$sql = preg_replace('/--.*/', '', file_get_contents("test_data.sql") );
+
 		$config = new DATABASE_CONFIG();
 		$config = $config->default;
+
+		$sql = "use " . $config['database'] . ";\n ".preg_replace('/--.*/', '', file_get_contents("test_data.sql") );
+		
 		//pr($sql);
 		//pr(new DATABASE_CONFIG());
 		mysqli_multi_query(new mysqli($config['host'], $config['login'], $config['password'], $config['database']), $sql) or die("error."); 

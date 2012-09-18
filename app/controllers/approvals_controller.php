@@ -160,13 +160,11 @@ class ApprovalsController extends AppController {
 
 		$users = new UsersController;
 		$users->constructClasses();
-
 		$user = $users->User->find("list", array(
 			"conditions" => array("phone_id" => $pId), 
 			"recursive"  => -1, 
 			"fields"     => array("User.reach")
 		));
-			
 		if ( empty($user) ) {
 			echo "Phone not authorized.";
 			return;
@@ -196,7 +194,7 @@ class ApprovalsController extends AppController {
 		$pending = $location->arrayToHash($pending);
 
 		$quit = false;
-		echo "Pending \n";
+		echo "Pending: ";
 		$items = array();
 		
 		$location = $pending[$location_id];
@@ -211,7 +209,7 @@ class ApprovalsController extends AppController {
 			}
 		}
 
-		echo implode("\n", $items);
+		echo implode(", ", $items);
 	}
 	
 	function restApprove($mId=null, $pId=null, $locationFilter=null, $itemList=null)
@@ -286,8 +284,9 @@ class ApprovalsController extends AppController {
 		}
 		
 		$location = $pending[$location_id];
-		echo "Approvals\n ";
+		echo "Approvals: ";
 
+		$approvalList = array();
 
 		foreach ($location as $key => $item)
 		{
@@ -303,9 +302,11 @@ class ApprovalsController extends AppController {
 				if (isset($item['aggregate_items'][$key]['stat_ids']) && count($item['aggregate_items'][$key]['stat_ids']) > 0) {
 					$all_stats_ids = array_merge($all_stats_ids, $item['aggregate_items'][$key]['stat_ids']);
 				}
-				echo "$name: $quantity";
+				array_push($approvalList, "$name: $quantity");
 			}
 		}
+
+		echo implode(", ", $approvalList);
 
 		$saveData = array(
 			"Approval" => array( "user_id" => $user['User']['id'] ),
@@ -316,9 +317,9 @@ class ApprovalsController extends AppController {
 
 		$this->Approval->create();
 		if ($this->Approval->save($saveData)) {
-			echo "\nApprovals saved.";
+			echo "Approval successful.";
 		} else {
-			echo "Approvals not saved. Please try again.";
+			echo "Approval failed. Please try again.";
 		}
 
 		//echo "\n stats ids: " . implode(",", $all_stats_ids);
