@@ -1,4 +1,6 @@
 <?php
+
+
 	require_once('dataBase.php');
 	require_once('databaseManipulation.php');
 	require_once('sms.php');
@@ -7,6 +9,7 @@
 	require_once(__ROOT__ . '/config/options.php'); //use this configuration so that we can make use of App::Configure in cake for the form
 
 	define ("PHONE_NUMBER_LENGTH", $config['Phone']['length']);
+	define ("LOCALHOST", 'orbis.idg-rti.org');
 
 	//THIS MUST BE CHANGED FOR EACH PROJECTS' TIMEZONE
 	//OTHERWISE PHP DATE AND MYSQL DATE FROM THE WEBAPP MAY BE DIFFERENT
@@ -54,7 +57,7 @@
 		} else if ($sms->getAction() == 'pending') {
 			$pId = $smsManip->getPhoneId();
 			$item = strtoupper($sms->getItem() );
-			$raw = file_get_contents("http://localhost/approvals/rest/$pId/$item");
+			$raw = file_get_contents("http://".LOCALHOST."/approvals/rest/$pId/$item");
 			echo $raw;
 			exit;
 		} else if ($sms->getAction() == 'approve') {
@@ -75,7 +78,7 @@
 
 			$itemsArray = serialize($sms->getItemList());
 
-			$raw = file_get_contents("http://localhost/approvals/rest/$mId/$pId/$location/$itemsArray");
+			$raw = file_get_contents("http://".LOCALHOST."/approvals/rest/$mId/$pId/$location/$itemsArray");
 			$dbManip->setSent ($smsManip->getPhoneId(), $smsManip->getCurrDate(), $raw, $smsManip->getReceivedId());
 			echo $raw;
 			exit;
