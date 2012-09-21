@@ -268,7 +268,8 @@ class ApprovalsController extends AppController {
 			'parent' => null,
 			'approvalState' => self::NOT_APPROVED
 		));
-
+		
+		
 		$pending = $location->setAggregates($pending);
 		$pending = $location->flattenTree($pending);
 		$pending = $location->arrayToHash($pending);
@@ -279,7 +280,7 @@ class ApprovalsController extends AppController {
 
 		if (count($pending) == 0)
 		{
-			echo "Nothing to approve at this location";
+			echo "Nothing to approve at this location($locationFilter)";
 			return;
 		}
 		
@@ -290,10 +291,8 @@ class ApprovalsController extends AppController {
 
 		foreach ($location as $key => $item)
 		{
-
-			if (in_array($item['total_items'][$key]['icode'], $itemList) || $approveAllItems)
+			if (in_array(strtolower($item['total_items'][$key]['icode']), $itemList) || $approveAllItems)
 			{
-				
 				$name = $item['total_items'][$key]['name'];
 				$quantity = $item['total_items'][$key]['quantity'];
 				if (isset($item['local_items'][$key]['stat_ids']) && count($item['local_items'][$key]['stat_ids']) > 0) {
@@ -317,9 +316,9 @@ class ApprovalsController extends AppController {
 
 		$this->Approval->create();
 		if ($this->Approval->save($saveData)) {
-			echo "Approval successful.";
+			echo ". Approval successful.";
 		} else {
-			echo "Approval failed. Please try again.";
+			echo ". Approval failed. Please try again.";
 		}
 
 		//echo "\n stats ids: " . implode(",", $all_stats_ids);

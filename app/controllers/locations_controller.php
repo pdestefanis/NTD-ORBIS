@@ -139,22 +139,14 @@ class LocationsController extends AppController {
 
 	function getChildTree( $location_id = null, $options = array()) 
 	{
-		
 
 		if ( $location_id === null ) return null;
 
 		$result = array();
-		
-		
-		
 
 		$children = $this->Location->find('list', array('callbacks' => 'false', 'conditions' => array( 'parent_id' => $location_id, 'deleted = 0')));
 
-		if ( count( $children ) === 0 ) {
-
-			return null;
-
-		} else {
+		if ( count( $children ) !== 0 ) {
 
 			foreach ( array_keys( $children ) as $child )
 			{
@@ -183,7 +175,6 @@ class LocationsController extends AppController {
 			$attrs = $this->getLocalAttributes( $location_id, $options['approvalState'] );
 
 			$this_location = $this->Location->read(null,$location_id);
-			
 			
 			$root = array(
 				'parent'      => $this_location['Location']['parent_id'],
