@@ -221,7 +221,10 @@ class LocationsController extends AppController {
 
 		if ( $approvalState == 1 )
 		{
-			$approved_list = $stat->Stat->findAllByLocationId( $location_id );
+			$approved_list = $stat->Stat->find("all", 
+				array( "conditions" => array( "Stat.location_id" => $location_id ), 
+				       "order"      => "Stat.created ASC" ) 
+			);
 			foreach ( $approved_list as $one_approval ) 
 			{
 				if (count($one_approval['Approval']) != 0)
@@ -229,7 +232,10 @@ class LocationsController extends AppController {
 			}
 		} else if ( $approvalState == 0 )
 		{
-			$pending_stats = $stat->Stat->findAllByLocationId( $location_id );
+			$pending_stats = $stat->Stat->find("all", 
+				array( "conditions" => array( "Stat.location_id" => $location_id ), 
+				       "order"      => "Stat.created ASC" ) 
+			);
 			foreach ( $pending_stats as $one_approval ) 
 			{
 				if (count($one_approval['Approval']) == 0)
@@ -237,7 +243,10 @@ class LocationsController extends AppController {
 			}
 		} else
 		{
-			$local_stats = $stat->Stat->findAllByLocationId( $location_id );
+			$local_stats = $stat->Stat->find("all", 
+				array( "conditions" => array( "Stat.location_id" => $location_id ), 
+				       "order"      => "Stat.created ASC" )
+			);
 		}
 
 		$last_updated = "";
@@ -279,21 +288,10 @@ class LocationsController extends AppController {
 				$stat_list = array($one_stat['Stat']['id']);
 			}
 
-			if (isset( $items[$one_stat['Item']['id']]))
-			{
-				$new_quantity = intval($one_stat['Stat']['quantity']);
-				$new_quantity *= ($one_stat['Modifier']['id'] == 2) ? -1 : 1;
-				$quantity = $items[$one_stat['Item']['id']]['quantity'] + $new_quantity;
-			} else
-			{
-				$quantity = intval($one_stat['Stat']['quantity']);
-				$quantity *= ($one_stat['Modifier']['id'] == 2) ? -1 : 1;
-			}
-
 			$items[$one_stat['Item']['id']] = array(
 				'icode'          => $one_stat['Item']['code'],
 				'name'          => $one_stat['Item']['name'],
-				'quantity'      => $quantity,
+				'quantity'      => intval($one_stat['Stat']['quantity_after']),
 				'stat_ids'      => $stat_list,
 				'last_stat'     => $last_stat,
 				'approver'      => $approver,
