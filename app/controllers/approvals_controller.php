@@ -144,6 +144,8 @@ class ApprovalsController extends AppController {
 	{
 		$this->autoRender = false;
 
+		$itemQuery = strtoupper($itemQuery);
+
 		if ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) return;
 		
 		App::import('Controller', 'Phones');
@@ -195,11 +197,12 @@ class ApprovalsController extends AppController {
 
 		$quit = false;
 		echo "Pending: ";
-		$items = array();
 		
+		$items = array();
 		$location = $pending[$location_id];
 		foreach ($location as $key => $item)
 		{
+
 			$name = $item['total_items'][$key]['name'];
 			$quantity = $item['total_items'][$key]['quantity'];
 			$code = $item['total_items'][$key]['icode'];
@@ -208,6 +211,13 @@ class ApprovalsController extends AppController {
 				array_push($items, "$name($code): $quantity");
 			}
 		}
+		
+		if (count($items) == 0)
+		{
+			echo "Nothing pending.";
+			return;
+		}
+
 
 		echo implode(", ", $items);
 	}
@@ -216,7 +226,6 @@ class ApprovalsController extends AppController {
 	{
 		$this->autoRender = false;
 		if ($_SERVER['REMOTE_ADDR'] != $_SERVER['SERVER_ADDR']) return;
-
 
 
 		App::import('Controller', 'Phones');
@@ -280,7 +289,7 @@ class ApprovalsController extends AppController {
 
 		if (count($pending) == 0)
 		{
-			echo "Nothing to approve at this location($locationFilter)";
+			echo "Nothing to approve at this location";
 			return;
 		}
 		
@@ -311,15 +320,20 @@ class ApprovalsController extends AppController {
 			"Approval" => array( "user_id" => $user['User']['id'] ),
 			"Stat"     => array( "Stat" => $all_stats_ids )
 		);
-		
 
-
-		$this->Approval->create();
-		if ($this->Approval->save($saveData)) {
-			echo ". Approval successful.";
-		} else {
-			echo ". Approval failed. Please try again.";
+		if (count($all_stats_ids) != 0)
+		{
+			$this->Approval->create();
+			if ($this->Approval->save($saveData)) {
+				echo ". Approval successful.";
+			} else {
+				echo ". Approval failed. Please try again.";
+			}
+		} else
+		{
+			echo "Nothing to approve.";
 		}
+		
 
 		//echo "\n stats ids: " . implode(",", $all_stats_ids);
 
