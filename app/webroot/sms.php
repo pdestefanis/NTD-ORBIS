@@ -64,6 +64,7 @@ class sms {
 				$approvalArgs = explode(" ", $args[1]);
 				$this->location = $approvalArgs[1];
 				$this->itemList = array_slice($approvalArgs, 2);
+				if (count($this->itemList) == 0) $this->itemList = array("ALL");
 			}
 		} else { //update case	
 			$this->item = substr($args[1], 0, strpos($args[1], ' '));
@@ -116,7 +117,6 @@ class sms {
 	}
 	
 	function checkAction($a) {
-
 		$act = new action;
 		$r = new ReflectionObject($act);
 		$props = $r->getProperties();

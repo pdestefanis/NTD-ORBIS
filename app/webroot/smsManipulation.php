@@ -104,13 +104,6 @@ class smsManipulation {
 			// Check item list for correct item codes
 			$itemList = $this->sms->getItemList();
 
-			// If no items sent send error message
-			if (count($itemList) == 0) {
-				$raw = "No items sent. Usage: 'OK [facility] [item...item]'";
-				$this->dbManip->setSent($this->phoneId, $this->currDate, $raw, $this->getReceivedId());
-				echo $raw;
-				exit;
-			}
 			$missingItems = array();
 			foreach ($itemList as $oneItem) 
 			{
